@@ -439,6 +439,7 @@
     <a href="#p34">34. Co-work плагины</a>
     <a href="#p35">35. Ещё бизнес-кейсы</a>
     <a href="#p36">36. Бенчмарки Mythos</a>
+    <a href="#p37">37. Финальный аудит</a>
   </nav>
 
   <!-- Main content -->
@@ -1589,9 +1590,145 @@ Google Drive, then send me the drive link with access enabled for anyone.</code>
 
       <hr>
 
-      <p style="color: var(--text2); font-size: 14px; text-align: center; margin-top: 32px;">
-        Курс Никиты Велса · 2026 · 36 разделов · Система из 31 агента — в его Telegram-канале
+      <p style="color: var(--text2); font-size: 14px; text-align: center; margin-top: 32px; margin-bottom: 0;">
+        Продолжение ниже ↓
       </p>
+    </section>
+
+    <!-- Part 37 -->
+    <section id="p37">
+      <h2><span class="part-num">37</span> Финальный аудит — всё что осталось</h2>
+      <p>Результат исчерпывающей проверки по 9 категориям. Детали которые не вошли в предыдущие разделы.</p>
+
+      <h3>Инструменты</h3>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Инструмент</th><th>Назначение</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Mac Whisper</strong></td><td>Голосовой ввод длинных промтов — автор диктует вместо набора текста</td></tr>
+            <tr><td><strong>FFmpeg</strong></td><td>Обработка видео — нужен для работы YouTube Analyzer субагента</td></tr>
+            <tr><td><strong>Supadata</strong></td><td>Ускоренная транскрибация YouTube-видео через API, 100 бесплатных запросов/мес</td></tr>
+            <tr><td><strong>Stagehand</strong></td><td>Open-source SDK от Browserbase для создания браузерных агентов</td></tr>
+            <tr><td><strong>Vercel</strong></td><td>Альтернативная платформа хостинга (упоминается как то, что here.now заменяет)</td></tr>
+            <tr><td><strong>Siri (iOS 27)</strong></td><td>Интеграция: Siri маршрутизирует запросы напрямую в Claude или Gemini</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>Команды которые не упоминались</h3>
+
+      <div class="card">
+        <div class="card-title">! [bash-команда] — прямое выполнение в чате</div>
+        <p>Восклицательный знак перед текстом выполняет команду терминала <strong>прямо внутри чата</strong> без выхода из Claude Code. Например:</p>
+        <pre><code>! ls -la
+! git status
+! npm install</code></pre>
+      </div>
+
+      <div class="card">
+        <div class="card-title">claude --model opus-plan — авто-выбор модели</div>
+        <p>Специальная настройка: Claude <strong>сам выбирает</strong> между Opus и Sonnet в зависимости от сложности задачи. Планирование — Opus, реализация — Sonnet. Экономит токены автоматически.</p>
+      </div>
+
+      <div class="card">
+        <div class="card-title">/ads и /ads-quick — рекламные навыки</div>
+        <ul>
+          <li><code>/ads</code> — запуск полной рекламной стратегии (система из 15 навыков)</li>
+          <li><code>/ads-quick</code> — быстрый аудит без полного анализа</li>
+        </ul>
+      </div>
+
+      <h3>Советы которые пропустили</h3>
+
+      <div class="card">
+        <div class="card-title">Отказ от глобальных Custom Instructions</div>
+        <p>Автор Futurepedia советует <strong>оставлять глобальные поля «о себе» пустыми</strong> — общие правила часто делают ответы хуже. Лучше прописывать контекст индивидуально в каждом Проекте через CLAUDE.md.</p>
+      </div>
+
+      <h3>Примеры которых не было</h3>
+
+      <div class="card">
+        <div class="card-title">Cardio Flow — фитнес-приложение за 1 час</div>
+        <p>Приложение для генерации тренировок, созданное за 1 час <strong>на бесплатной модели</strong> через OpenRouter. Демонстрирует что можно делать серьёзные продукты без платной подписки.</p>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Путеводитель по Юте — фото → PDF</div>
+        <p>Сборник скриншотов из телефона — Claude организовал их в PDF-документ с <strong>группировкой по регионам и сложности маршрутов</strong>. Пример нестандартного применения.</p>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Google Chrome Dinosaur Game</div>
+        <p>Создание полноценной игры с управлением пробелом за <strong>2 минуты</strong>. Промт дословно:</p>
+        <pre><code>Create the famous Google Chrome dinosaur game and open it
+so I can play it live by using the same space bar key to jump.</code></pre>
+      </div>
+
+      <h3>Цифры</h3>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Цифра</th><th>Что означает</th></tr></thead>
+          <tbody>
+            <tr><td><strong>$20 000</strong></td><td>Стоимость вычислений для одного цикла поиска бага в OpenBSD (1000 параллельных агентов)</td></tr>
+            <tr><td><strong>93.9%</strong></td><td>Результат Mythos на бенчмарке Swebench Verified</td></tr>
+            <tr><td><strong>$100 000 000</strong></td><td>Сумма в кредитах выделенная Anthropic на open-source безопасность</td></tr>
+            <tr><td><strong>244 страницы</strong></td><td>Объём System Card описывающего обучение и возможности Mythos</td></tr>
+            <tr><td><strong>100 000</strong></td><td>Сайтов уже размещённых на платформе here.now</td></tr>
+            <tr><td><strong>7%</strong></td><td>Процент пользователей которые заметят снижение лимитов в пиковые часы</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>Личное — авторы видео о себе</h3>
+
+      <div class="card">
+        <div class="card-title">Никита Велс</div>
+        <p>Прямо заявляет: <strong>«Я не программист и не написал ни строчки кода руками»</strong>. Всё создано только с помощью Claude Code. Это главный месседж курса — инструмент доступен всем.</p>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Ишан Шарма</div>
+        <p>За 2 года обучения компаний ИИ-инструментам <strong>не нашёл ничего эффективнее Claude</strong>. Персональные данные для Memory: 24 года, Бангалор, строгий вегетарианец — пример как настроить персонализацию.</p>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Tech With Tim</div>
+        <p>Использовал Claude Code для создания <strong>всей презентации</strong> которую зрители видят в его видео — то есть видео сделано с помощью инструмента который оно рекламирует.</p>
+      </div>
+
+      <h3>Спонсоры и партнёры</h3>
+      <div style="margin: 12px 0 20px;">
+        <span class="tag blue">Browserbase</span>
+        <span class="tag blue">Stagehand</span>
+        <span class="tag orange">Cloudflare</span>
+        <span class="tag">OpenRouter</span>
+        <span class="tag">here.now</span>
+      </div>
+      <p style="color: var(--text2); font-size: 14px;"><strong>Cloudflare</strong> — партнёр в разработке протокола Webbot 9000 (верификация браузерных агентов).</p>
+
+      <h3>Ссылки из видео</h3>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>URL</th><th>Что там</th></tr></thead>
+          <tbody>
+            <tr><td><code>claude.ai/download</code></td><td>Официальная загрузка десктоп-версии</td></tr>
+            <tr><td><code>visualstudio.com</code></td><td>Загрузка VS Code</td></tr>
+            <tr><td><code>learnwithhassan.com</code></td><td>Пример правильной модульной структуры проекта</td></tr>
+            <tr><td><code>markitup.in</code></td><td>Сайт Ишана — использован для демо-ролика в Remotion</td></tr>
+            <tr><td><code>news.ycombinator.com</code></td><td>Источник для примера с парсингом новостей</td></tr>
+            <tr><td><code>smizery.com</code></td><td>Маркетплейс MCP-серверов</td></tr>
+            <tr><td><code>openrouter.ai</code></td><td>Бесплатные модели для Claude Code</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <hr>
+
+      <div class="highlight" style="text-align: center;">
+        <p style="font-size: 18px; font-weight: 700; margin-bottom: 8px;">✓ Аудит завершён</p>
+        <p style="color: var(--text2);">37 разделов · Все темы из 3-часового видео покрыты исчерпывающе</p>
+        <p style="color: var(--text2); font-size: 14px; margin-top: 8px;">Курс Никиты Велса · 2026 · Система из 31 агента — в его Telegram-канале</p>
+      </div>
     </section>
 
   </main>
