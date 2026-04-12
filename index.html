@@ -434,6 +434,11 @@
     <a href="#p29">29. Монетизация</a>
     <a href="#p30">30. Система 31 агента</a>
     <a href="#p31">31. Claude Co-work и Dispatch</a>
+    <a href="#p32">32. Plan Mode</a>
+    <a href="#p33">33. Artifacts и визуализация</a>
+    <a href="#p34">34. Co-work плагины</a>
+    <a href="#p35">35. Ещё бизнес-кейсы</a>
+    <a href="#p36">36. Бенчмарки Mythos</a>
   </nav>
 
   <!-- Main content -->
@@ -1472,8 +1477,120 @@ Google Drive, then send me the drive link with access enabled for anyone.</code>
 
       <hr>
 
+      <p style="color: var(--text2); font-size: 14px; text-align: center; margin-top: 32px; margin-bottom: 0;">
+        Продолжение ниже ↓
+      </p>
+    </section>
+
+    <!-- Part 32 -->
+    <section id="p32">
+      <h2><span class="part-num">32</span> Plan Mode — архитектура без кода</h2>
+      <p>Нажми <strong>Shift+Tab</strong> перед началом задачи — Claude переходит в режим планирования.</p>
+      <div class="highlight">
+        <div class="card-title" style="color: var(--accent);">Зачем это нужно</div>
+        <p>В Plan Mode Claude составляет полную архитектуру приложения — структуру файлов, компоненты, логику — <strong>не приступая к написанию кода</strong>. Ты согласовываешь план, и только потом он начинает кодить.</p>
+        <p style="color: var(--text2); font-size: 14px; margin-top: 8px;">Это экономит токены и предотвращает ситуацию когда Claude написал всё не так и надо переделывать с нуля.</p>
+      </div>
+      <h3>Workflow с Plan Mode</h3>
+      <div class="steps">
+        <div class="step"><div class="step-num"></div><div><strong>Shift+Tab</strong> — включить Plan Mode</div></div>
+        <div class="step"><div class="step-num"></div><div>Описываешь задачу — Claude строит архитектурный план</div></div>
+        <div class="step"><div class="step-num"></div><div>Согласовываешь или правишь план</div></div>
+        <div class="step"><div class="step-num"></div><div>Выходишь из Plan Mode — Claude реализует по плану</div></div>
+      </div>
+    </section>
+
+    <!-- Part 33 -->
+    <section id="p33">
+      <h2><span class="part-num">33</span> Artifacts — интерактивная визуализация</h2>
+      <p><strong>Artifacts</strong> — окно с живым результатом прямо в интерфейсе Claude. Не просто текст, а работающий интерактивный объект.</p>
+
+      <div class="card">
+        <div class="card-title">Интерактивное обучение</div>
+        <p>Claude создаёт полноценные обучающие приложения прямо в артефакте. Пример из видео — <strong>анимация процесса фотосинтеза</strong>: кликаешь на элементы и видишь химические реакции в реальном времени.</p>
+      </div>
+
+      <div class="card">
+        <div class="card-title">p5.js — анимации и графики</div>
+        <p>Claude «в один клик» создаёт сложные интерактивные графики и анимации используя библиотеку <strong>p5.js</strong> — прямо в окне артефактов, без внешних инструментов.</p>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Inline Visualizations — вкладки внутри ответа</div>
+        <p>Новая функция: несколько вкладок внутри одного ответа. Например, финансовый анализ с вкладками: <strong>«Маркетинг» / «Продажи» / «Масштабирование»</strong> — переключаешься между разделами не листая текст.</p>
+      </div>
+    </section>
+
+    <!-- Part 34 -->
+    <section id="p34">
+      <h2><span class="part-num">34</span> Claude Co-work — библиотека плагинов</h2>
+      <p>В Co-work есть готовые наборы инструментов под конкретные бизнес-задачи:</p>
+
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Плагин</th><th>Для чего</th></tr></thead>
+          <tbody>
+            <tr><td><span class="tag purple">Apollo</span></td><td>Генерация и обогащение лидов — поиск потенциальных клиентов с контактами</td></tr>
+            <tr><td><span class="tag blue">Legal</span></td><td>Юридические задачи — анализ договоров, составление документов</td></tr>
+            <tr><td><span class="tag">Product Management</span></td><td>Управление продуктом — роадмапы, приоритизация, PRD</td></tr>
+            <tr><td><span class="tag orange">Sales</span></td><td>Продажи — скрипты, анализ воронки, холодные письма</td></tr>
+            <tr><td><span class="tag blue">Gmail Connector</span></td><td>«Найди важные письма на которые нужно ответить срочно»</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>Scheduled Tasks — расширенные примеры</h3>
+      <pre><code><span class="cm">// Ежедневная подборка новостей</span>
+Каждое утро в 10:00 делай подборку новостей об ИИ из X (Twitter),
+составляй краткий отчёт и сохраняй в PDF на рабочий стол.</code></pre>
+    </section>
+
+    <!-- Part 35 -->
+    <section id="p35">
+      <h2><span class="part-num">35</span> Ещё бизнес-кейсы монетизации</h2>
+
+      <div class="card">
+        <div class="card-title">Landing Page Audit — аудит лендингов</div>
+        <p>Навык анализирует лендинг по параметрам: конверсия, CTA, доверительные сигналы, структура.</p>
+        <p style="margin-top: 8px;">Продаётся как разовый аудит за <strong>$500–$2 000</strong>. Создаётся за несколько минут.</p>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Career Coaching — карьерный консультант</div>
+        <p>Навык анализирует профиль LinkedIn и резюме пользователя, затем <strong>адаптирует их под конкретную вакансию</strong> (например, позицию в Salesforce) — переписывает опыт, навыки и summary под требования JD.</p>
+      </div>
+
+      <div class="card">
+        <div class="card-title">SEO-агентство (кейс Sandy)</div>
+        <p>Мама троих детей создаёт SEO-оптимизированные блоги для технологических компаний с помощью Claude — <strong>$5 500/мес за 15 минут работы в день</strong>. Весь процесс: ресёрч ключевых слов → статья → публикация — полностью автоматизирован.</p>
+      </div>
+    </section>
+
+    <!-- Part 36 -->
+    <section id="p36">
+      <h2><span class="part-num">36</span> Бенчмарки Claude Mythos — цифры</h2>
+
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Тест</th><th>Mythos</th><th>Сравнение</th></tr></thead>
+          <tbody>
+            <tr><td>Swebench Pro</td><td><strong>77.8%</strong></td><td>У Opus — значительно ниже</td></tr>
+            <tr><td>Swebench Multimodal</td><td><strong>59%</strong></td><td>Лучший результат на момент выхода</td></tr>
+            <tr><td>Математические соревнования</td><td><strong>+50%</strong></td><td>К предыдущим лидерам</td></tr>
+            <tr><td>Написание эксплойтов (Firefox)</td><td><strong>72.4%</strong></td><td>Sonnet 4.6 — 4.4%</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Масштаб модели</div>
+        <p>По слухам — <strong>10 триллионов параметров</strong>. Для сравнения: большинство современных моделей — 100–700 миллиардов. Разница в 10–100 раз объясняет качественный скачок в сложных задачах.</p>
+      </div>
+
+      <hr>
+
       <p style="color: var(--text2); font-size: 14px; text-align: center; margin-top: 32px;">
-        Курс Никиты Велса · 2026 · Система из 31 агента — в его Telegram-канале
+        Курс Никиты Велса · 2026 · 36 разделов · Система из 31 агента — в его Telegram-канале
       </p>
     </section>
 
