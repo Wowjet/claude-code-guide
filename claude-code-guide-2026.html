@@ -1,0 +1,1738 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Полный курс Claude Code 2026</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+
+  :root {
+    --bg: #0d0d0f;
+    --bg2: #141417;
+    --bg3: #1c1c21;
+    --border: #2a2a32;
+    --text: #e8e8f0;
+    --text2: #9999b0;
+    --accent: #a78bfa;
+    --accent2: #7c3aed;
+    --green: #34d399;
+    --orange: #fb923c;
+    --blue: #60a5fa;
+    --red: #f87171;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Inter', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.8;
+    font-size: 16px;
+  }
+
+  /* Layout */
+  .layout {
+    display: flex;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 24px;
+  }
+
+  /* Sidebar TOC */
+  .toc {
+    width: 260px;
+    flex-shrink: 0;
+    position: sticky;
+    top: 32px;
+    height: calc(100vh - 64px);
+    overflow-y: auto;
+    padding: 32px 24px 32px 0;
+    border-right: 1px solid var(--border);
+    margin-right: 48px;
+  }
+
+  .toc::-webkit-scrollbar { width: 4px; }
+  .toc::-webkit-scrollbar-track { background: transparent; }
+  .toc::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+
+  .toc-title {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--text2);
+    margin-bottom: 16px;
+  }
+
+  .toc a {
+    display: block;
+    color: var(--text2);
+    text-decoration: none;
+    font-size: 13px;
+    padding: 4px 0;
+    transition: color 0.2s;
+    border-left: 2px solid transparent;
+    padding-left: 10px;
+    margin-left: -10px;
+  }
+
+  .toc a:hover { color: var(--accent); border-left-color: var(--accent); }
+  .toc a.h3 { padding-left: 22px; margin-left: -10px; font-size: 12px; }
+
+  /* Main content */
+  .content {
+    flex: 1;
+    min-width: 0;
+    padding: 48px 0 80px;
+  }
+
+  /* Hero */
+  .hero {
+    margin-bottom: 56px;
+    padding-bottom: 48px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .hero-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(167,139,250,0.1);
+    border: 1px solid rgba(167,139,250,0.25);
+    color: var(--accent);
+    font-size: 12px;
+    font-weight: 500;
+    padding: 6px 14px;
+    border-radius: 100px;
+    margin-bottom: 24px;
+    letter-spacing: 0.04em;
+  }
+
+  .hero h1 {
+    font-size: 42px;
+    font-weight: 700;
+    line-height: 1.15;
+    letter-spacing: -0.02em;
+    margin-bottom: 16px;
+    background: linear-gradient(135deg, #e8e8f0 0%, #a78bfa 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .hero-sub {
+    color: var(--text2);
+    font-size: 17px;
+    max-width: 600px;
+  }
+
+  /* Section */
+  section {
+    margin-bottom: 56px;
+    scroll-margin-top: 32px;
+  }
+
+  section h2 {
+    font-size: 26px;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    margin-bottom: 20px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--border);
+    color: var(--text);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .part-num {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    background: rgba(167,139,250,0.15);
+    border: 1px solid rgba(167,139,250,0.3);
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--accent);
+    flex-shrink: 0;
+  }
+
+  section h3 {
+    font-size: 17px;
+    font-weight: 600;
+    color: var(--text);
+    margin: 28px 0 12px;
+    scroll-margin-top: 32px;
+  }
+
+  p { margin-bottom: 14px; color: var(--text); }
+
+  /* Blockquote */
+  blockquote {
+    background: rgba(167,139,250,0.06);
+    border-left: 3px solid var(--accent);
+    border-radius: 0 8px 8px 0;
+    padding: 14px 18px;
+    margin: 20px 0;
+    color: var(--text2);
+    font-size: 15px;
+  }
+
+  blockquote strong { color: var(--accent); }
+
+  /* Warning blockquote */
+  blockquote.warn {
+    background: rgba(251,146,60,0.06);
+    border-left-color: var(--orange);
+  }
+  blockquote.warn strong { color: var(--orange); }
+
+  /* Code */
+  pre {
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 20px;
+    overflow-x: auto;
+    margin: 16px 0;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13.5px;
+    line-height: 1.7;
+  }
+
+  code {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    background: rgba(255,255,255,0.07);
+    padding: 2px 7px;
+    border-radius: 5px;
+    color: var(--green);
+  }
+
+  pre code {
+    background: none;
+    padding: 0;
+    color: var(--text);
+  }
+
+  /* Syntax highlight manual */
+  .kw { color: #c792ea; }
+  .str { color: var(--green); }
+  .cm { color: var(--text2); }
+  .nm { color: var(--blue); }
+  .op { color: var(--orange); }
+
+  /* Tables */
+  .table-wrap { overflow-x: auto; margin: 20px 0; }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14.5px;
+  }
+
+  th {
+    background: var(--bg3);
+    color: var(--text2);
+    font-weight: 600;
+    font-size: 12px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    padding: 12px 16px;
+    text-align: left;
+    border-bottom: 1px solid var(--border);
+  }
+
+  td {
+    padding: 12px 16px;
+    border-bottom: 1px solid rgba(42,42,50,0.6);
+    vertical-align: top;
+  }
+
+  tr:last-child td { border-bottom: none; }
+  tr:hover td { background: rgba(255,255,255,0.02); }
+
+  td:first-child code { background: rgba(167,139,250,0.1); color: var(--accent); }
+
+  /* Lists */
+  ul, ol {
+    padding-left: 22px;
+    margin-bottom: 14px;
+  }
+
+  li { margin-bottom: 6px; }
+  li::marker { color: var(--accent); }
+
+  /* Cards */
+  .card {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px 24px;
+    margin: 16px 0;
+  }
+
+  .card-title {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--accent);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    margin-bottom: 12px;
+  }
+
+  /* Step list */
+  .steps { counter-reset: step; margin: 16px 0; }
+
+  .step {
+    display: flex;
+    gap: 16px;
+    margin-bottom: 16px;
+    align-items: flex-start;
+  }
+
+  .step-num {
+    counter-increment: step;
+    width: 28px;
+    height: 28px;
+    background: rgba(167,139,250,0.15);
+    border: 1px solid rgba(167,139,250,0.3);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--accent);
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+
+  .step-num::before { content: counter(step); }
+
+  /* Tag pills */
+  .tag {
+    display: inline-block;
+    background: rgba(52,211,153,0.1);
+    border: 1px solid rgba(52,211,153,0.25);
+    color: var(--green);
+    font-size: 11px;
+    font-weight: 600;
+    padding: 3px 10px;
+    border-radius: 100px;
+    margin-right: 6px;
+    margin-bottom: 6px;
+    letter-spacing: 0.04em;
+  }
+
+  .tag.blue { background: rgba(96,165,250,0.1); border-color: rgba(96,165,250,0.25); color: var(--blue); }
+  .tag.purple { background: rgba(167,139,250,0.1); border-color: rgba(167,139,250,0.25); color: var(--accent); }
+  .tag.orange { background: rgba(251,146,60,0.1); border-color: rgba(251,146,60,0.25); color: var(--orange); }
+
+  /* Divider */
+  hr {
+    border: none;
+    border-top: 1px solid var(--border);
+    margin: 32px 0;
+  }
+
+  /* Highlight box */
+  .highlight {
+    background: linear-gradient(135deg, rgba(167,139,250,0.08), rgba(96,165,250,0.05));
+    border: 1px solid rgba(167,139,250,0.2);
+    border-radius: 12px;
+    padding: 20px 24px;
+    margin: 20px 0;
+  }
+
+  /* Error box */
+  .error-box {
+    background: rgba(248,113,113,0.06);
+    border: 1px solid rgba(248,113,113,0.2);
+    border-radius: 12px;
+    padding: 20px 24px;
+    margin: 20px 0;
+  }
+
+  .error-box .card-title { color: var(--red); }
+
+  strong { font-weight: 600; }
+  em { color: var(--text2); font-style: italic; }
+
+  /* Print styles */
+  @media print {
+    .toc { display: none; }
+    .layout { display: block; }
+    .content { padding: 0; }
+    body { background: white; color: #111; font-size: 12px; }
+    pre { background: #f5f5f5; border-color: #ddd; }
+    code { background: #f0f0f0; color: #333; }
+    section h2 { color: #111; border-bottom-color: #ddd; }
+    .hero h1 { -webkit-text-fill-color: #111; color: #111; }
+    .part-num { background: #eee; color: #333; border-color: #ddd; }
+    blockquote { background: #f9f9f9; border-left-color: #999; }
+    td, th { border-color: #ddd; }
+    th { background: #f5f5f5; color: #666; }
+    .card { background: #f9f9f9; border-color: #ddd; }
+    .highlight { background: #f5f5ff; border-color: #ddd; }
+  }
+
+  @media (max-width: 768px) {
+    .toc { display: none; }
+    .layout { display: block; }
+  }
+</style>
+</head>
+<body>
+
+<div class="layout">
+
+  <!-- Sidebar TOC -->
+  <nav class="toc">
+    <div class="toc-title">Содержание</div>
+    <a href="#intro">Введение</a>
+    <a href="#p1">1. Что такое Claude Code</a>
+    <a href="#p2">2. Установка и запуск</a>
+    <a href="#p3">3. Режим автономной работы</a>
+    <a href="#p4">4. Файл CLAUDE.md</a>
+    <a href="#p4-create" class="h3">Как создать</a>
+    <a href="#p4-content" class="h3">Что писать</a>
+    <a href="#p5">5. Команды Claude Code</a>
+    <a href="#p6">6. Управление контекстом</a>
+    <a href="#p7">7. Выбор модели</a>
+    <a href="#p8">8. MCP-серверы</a>
+    <a href="#p8-connect" class="h3">Как подключить</a>
+    <a href="#p8-services" class="h3">Сервисы из видео</a>
+    <a href="#p9">9. Навыки (Skills)</a>
+    <a href="#p9-create" class="h3">Как создать</a>
+    <a href="#p9-examples" class="h3">Примеры</a>
+    <a href="#p10">10. Agent Teams</a>
+    <a href="#p10-roles" class="h3">Роли агентов</a>
+    <a href="#p11">11. Telegram-интеграция</a>
+    <a href="#p12">12. Пример: Финанализ</a>
+    <a href="#p13">13. С чего начать</a>
+    <a href="#p14">14. Типичные ошибки</a>
+    <a href="#p15">15. Тарифы и цены</a>
+    <a href="#p16">16. Hooks и Settings</a>
+    <a href="#p17">17. Память и работа с кодом</a>
+    <a href="#p18">18. SubAgents vs Agent Tools</a>
+    <a href="#p19">19. Демо: сайт за один промт</a>
+    <a href="#p20">20. Демо: YouTube, Excel, видео</a>
+    <a href="#p21">21. Промт-формулы автора</a>
+    <a href="#p22">22. Экономия кредитов</a>
+    <a href="#p23">23. Новые инструменты</a>
+    <a href="#p24">24. Бизнес-воркфлоу</a>
+    <a href="#p25">25. Нюансы разработки</a>
+    <a href="#p26">26. Claude Mythos</a>
+    <a href="#p27">27. Настройка окружения</a>
+    <a href="#p28">28. Готовые промты из видео</a>
+    <a href="#p29">29. Монетизация</a>
+    <a href="#p30">30. Система 31 агента</a>
+    <a href="#p31">31. Claude Co-work и Dispatch</a>
+    <a href="#p32">32. Plan Mode</a>
+    <a href="#p33">33. Artifacts и визуализация</a>
+    <a href="#p34">34. Co-work плагины</a>
+    <a href="#p35">35. Ещё бизнес-кейсы</a>
+    <a href="#p36">36. Бенчмарки Mythos</a>
+    <a href="#p37">37. Финальный аудит</a>
+  </nav>
+
+  <!-- Main content -->
+  <main class="content">
+
+    <!-- Hero -->
+    <div class="hero" id="intro">
+      <div class="hero-badge">📹 По курсу Никиты Велса · 3+ часа · 2026</div>
+      <h1>Полный курс<br>Claude Code 2026</h1>
+      <p class="hero-sub">Читай как будто смотришь видео — всё по порядку: от установки до мультиагентных систем и Telegram-интеграции.</p>
+    </div>
+
+    <!-- Part 1 -->
+    <section id="p1">
+      <h2><span class="part-num">1</span> Что такое Claude Code и зачем он нужен</h2>
+      <p>Claude Code — это <strong>терминальная версия Claude</strong>, самая продвинутая из всех. Не веб-чат, не десктоп-приложение — именно терминал даёт доступ к функциям, которых нигде больше нет:</p>
+      <ul>
+        <li>Управление файлами и папками на твоём компьютере</li>
+        <li>Выполнение команд в терминале</li>
+        <li>Подключение к внешним сервисам (Google, GitHub, Telegram)</li>
+        <li>Запуск мультиагентных команд</li>
+        <li>Полная автономная работа без твоего участия</li>
+      </ul>
+      <blockquote>
+        <strong>Суть:</strong> ты превращаешь Claude из чат-бота в <strong>автономного исполнителя</strong>, который сам открывает файлы, парсит сайты, пишет код и отправляет отчёты.
+      </blockquote>
+    </section>
+
+    <!-- Part 2 -->
+    <section id="p2">
+      <h2><span class="part-num">2</span> Установка и первый запуск</h2>
+
+      <div class="card">
+        <div class="card-title">Требования</div>
+        <p>Нужна <strong>платная подписка Pro или Max</strong> — на бесплатном тарифе Claude Code недоступен.</p>
+      </div>
+
+      <h3>Установка</h3>
+
+      <p><strong>Mac:</strong></p>
+      <pre><code>curl -sL https://claude.ai/install-macos | sh</code></pre>
+
+      <p><strong>Windows:</strong> через PowerShell, команда с сайта <code>code.claude.com</code></p>
+      <p><strong>Linux:</strong> аналогично через терминал</p>
+
+      <h3>Запуск</h3>
+      <pre><code>claude</code></pre>
+
+      <h3>Интеграция с VS Code</h3>
+      <div class="steps">
+        <div class="step"><div class="step-num"></div><div>Установи расширение <code>claudecode</code> в VS Code</div></div>
+        <div class="step"><div class="step-num"></div><div>Авторизуйся командой <code>/login</code></div></div>
+      </div>
+    </section>
+
+    <!-- Part 3 -->
+    <section id="p3">
+      <h2><span class="part-num">3</span> Режим автономной работы</h2>
+      <p>По умолчанию Claude <strong>спрашивает разрешение</strong> на каждый шаг — создать файл? подтверди. Выполнить команду? подтверди. Это неудобно.</p>
+      <p>Для полной автономии запускай с флагом:</p>
+      <pre><code>claude --dangerously-skip-permissions</code></pre>
+      <blockquote class="warn">
+        <strong>Предупреждение автора:</strong> используй осторожно — агент будет делать всё сам без вопросов. Убедись, что понимаешь, что он делает.
+      </blockquote>
+    </section>
+
+    <!-- Part 4 -->
+    <section id="p4">
+      <h2><span class="part-num">4</span> Файл CLAUDE.md — мозг проекта</h2>
+      <p>Это самая важная концепция курса. <strong>CLAUDE.md</strong> — главная системная инструкция, которую агент читает перед началом любой работы в папке. Благодаря ему Claude сразу «знает» твой проект — не нужно каждый раз объяснять что и как.</p>
+
+      <h3 id="p4-create">Как создать</h3>
+      <p>Создай файл <code>CLAUDE.md</code> в корне проекта. Формат <code>.md</code> (Markdown) — стандарт для AI-агентов.</p>
+
+      <h3 id="p4-content">Что писать внутри</h3>
+      <pre><code><span class="cm"># Project: Wells Industries — корпоративный сайт IT-компании</span>
+
+<span class="kw">Tech Stack:</span> <span class="str">React, Vite, Tailwind CSS</span>
+
+<span class="kw">Design:</span> <span class="str">Modern minimal, dark theme, orange accents</span>
+
+<span class="kw">Sections:</span>
+- Hero: Abstract 3D shapes
+- About: 5 years of automation experience
+- Cases: Client success stories
+- Contact: Form with validation
+
+<span class="kw">Agreements:</span>
+- Компоненты в camelCase
+- Стили только через Tailwind классы
+- Комментарии на русском языке</code></pre>
+
+      <blockquote>
+        <strong>Важно:</strong> без CLAUDE.md Claude может предложить неверные библиотеки или сломать структуру проекта. С ним — даже в новом чате агент сразу вспомнит всё.
+      </blockquote>
+    </section>
+
+    <!-- Part 5 -->
+    <section id="p5">
+      <h2><span class="part-num">5</span> Команды Claude Code</h2>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>Команда</th><th>Что делает</th></tr>
+          </thead>
+          <tbody>
+            <tr><td><code>/context</code></td><td>Показывает заполнение контекста в % и токенах</td></tr>
+            <tr><td><code>/new</code> или <code>/clear</code></td><td>Новый чат с чистого листа</td></tr>
+            <tr><td><code>/compact</code></td><td>Сжимает диалог в краткое summary, не теряя сессию</td></tr>
+            <tr><td><code>/rewind</code></td><td>Откат к предыдущей точке — отменяет и переписку, и изменения в файлах</td></tr>
+            <tr><td><code>/model</code></td><td>Переключить модель (Opus / Sonnet)</td></tr>
+            <tr><td><code>/mcp</code></td><td>Список всех подключённых MCP-серверов</td></tr>
+            <tr><td><code>/login</code></td><td>Авторизация в аккаунте Anthropic</td></tr>
+            <tr><td><code>/remote-control</code></td><td>QR-код для управления с телефона</td></tr>
+            <tr><td><code>/config</code></td><td>Настройки: thinking mode, уведомления, автосжатие</td></tr>
+            <tr><td><code>/usage</code></td><td>Статистика лимитов (5-часовых и недельных)</td></tr>
+            <tr><td><code>/voice</code></td><td>Голосовой ввод промтов прямо в терминал</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- Part 6 -->
+    <section id="p6">
+      <h2><span class="part-num">6</span> Управление контекстным окном</h2>
+      <p>Контекст — это <strong>оперативная память</strong> Claude. Чем больше заполнено, тем дороже каждый запрос и тем хуже качество ответов.</p>
+
+      <div class="card">
+        <div class="card-title">Правило 1 — Одна задача, один чат</div>
+        <p>Никогда не смешивай разные задачи в одном диалоге. Закончил — открыл новый чат.</p>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Правило 2 — Контроль порога 50%</div>
+        <p>Следи через <code>/context</code>. Если перевалило за 50–60% — используй <code>/compact</code> или <code>/new</code>.</p>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Правило 3 — Ground First, Ask Second</div>
+        <p>Сначала попроси Claude изучить файлы/документацию, а затем <strong>вторым сообщением</strong> ставь задачу. Качество резко улучшается.</p>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Правило 4 — Экономь на MCP</div>
+        <p>Каждый подключённый MCP-сервер (например, Google Sheets) съедает ~2000 токенов при каждом запросе. Если сервис нужен редко — лучше создай <strong>Skill</strong>.</p>
+      </div>
+    </section>
+
+    <!-- Part 7 -->
+    <section id="p7">
+      <h2><span class="part-num">7</span> Выбор модели</h2>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>Задача</th><th>Модель</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Сложный ресерч, архитектура системы, планирование</td>
+              <td><span class="tag purple">Opus 4.6</span></td>
+            </tr>
+            <tr>
+              <td>Написание кода по готовым инструкциям, рутина</td>
+              <td><span class="tag blue">Sonnet</span> <em>(быстрее и дешевле)</em></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <blockquote class="warn">
+        <strong>Типичная ошибка новичка:</strong> использовать Opus для всего. Квота кончается за час.
+      </blockquote>
+    </section>
+
+    <!-- Part 8 -->
+    <section id="p8">
+      <h2><span class="part-num">8</span> MCP-серверы — подключение внешних сервисов</h2>
+      <p><strong>MCP (Model Context Protocol)</strong> — протокол, который объединяет API разных сервисов в единую схему. Автор сравнивает его с <strong>USB-хабом</strong>: воткнул один штекер — получил доступ к 38 инструментам Google Sheets сразу.</p>
+
+      <h3 id="p8-services">Сервисы из видео</h3>
+      <div style="margin: 12px 0 20px;">
+        <span class="tag">Google Sheets</span>
+        <span class="tag">Google Drive</span>
+        <span class="tag">Google Calendar</span>
+        <span class="tag">Gmail</span>
+        <span class="tag orange">Chrome DevTools</span>
+        <span class="tag blue">GitHub</span>
+        <span class="tag blue">Slack</span>
+        <span class="tag blue">Notion</span>
+        <span class="tag blue">Asana</span>
+        <span class="tag blue">RSS-парсинг</span>
+      </div>
+
+      <p>Chrome DevTools позволяет автоматизировать браузер — Claude может зайти на Wildberries, найти товар и добавить в корзину.</p>
+
+      <h3 id="p8-connect">Как подключить</h3>
+
+      <div class="card">
+        <div class="card-title">Способ 1 — через агента (проще)</div>
+        <p>Скопируй команду-промт с маркетплейса (например, <code>smizery.com</code>) и вставь в чат Claude Code. Агент сам скачает и установит сервер.</p>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Способ 2 — вручную</div>
+        <p>Через терминал с помощью npm или специфических скриптов. После установки Claude выдаст ссылку для авторизации — подтверди в браузере.</p>
+      </div>
+
+      <h3>Конфигурация</h3>
+      <p>Все настройки MCP хранятся в <code>settings.json</code>. Просмотр установленных серверов:</p>
+      <pre><code>/mcp</code></pre>
+    </section>
+
+    <!-- Part 9 -->
+    <section id="p9">
+      <h2><span class="part-num">9</span> Навыки (Skills) — многоразовые рабочие процессы</h2>
+      <p><strong>Skills</strong> — готовые пакеты экспертизы, которые обучают Claude делать повторяющиеся задачи определённым образом. В отличие от MCP, навыки хранятся локально в папке <code>.claude/skills</code> и включают инструкции, скрипты (Python, JS) и шаблоны.</p>
+
+      <h3 id="p9-create">Как создать навык</h3>
+
+      <div class="card">
+        <div class="card-title">Способ 1 — Skill Creator</div>
+        <p>Специальный официальный навык от Anthropic. Он «интервьюирует» тебя — спрашивает о целях, входных данных и желаемом формате — и сам пишет файл <code>skill.md</code>.</p>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Способ 2 — из диалога</div>
+        <p>Если Claude дал идеальный результат в чате — напиши: <em>«Преврати это в навык»</em>.</p>
+      </div>
+
+      <h3>Структура файла skill.md</h3>
+      <pre><code><span class="cm">---</span>
+<span class="kw">name:</span> <span class="str">humanizer</span>
+<span class="kw">description:</span> <span class="str">Переписывает ИИ-текст, делая его человечным</span>
+<span class="cm">---</span>
+
+<span class="cm">[Инструкция для агента...]</span></code></pre>
+
+      <blockquote>
+        <strong>Описание (description)</strong> — критически важно. По нему Claude понимает, когда автоматически активировать навык.
+      </blockquote>
+
+      <h3 id="p9-examples">Примеры навыков из видео</h3>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>Навык</th><th>Что делает</th></tr>
+          </thead>
+          <tbody>
+            <tr><td><code>Generate Infographic</code></td><td>Превращает текст в графическую инфографику через Gemini API</td></tr>
+            <tr><td><code>Humanizer</code></td><td>Переписывает «ИИ-текст» под человеческий стиль</td></tr>
+            <tr><td><code>Remotion</code></td><td>Создаёт видео-тизеры продукта по URL сайта</td></tr>
+            <tr><td><code>Ad Strategy & Hooks</code></td><td>Анализирует аудиторию, генерирует 20 типов рекламных заголовков</td></tr>
+            <tr><td><code>YouTube Optimization</code></td><td>Критика сценария, написание интро, подбор заголовков</td></tr>
+            <tr><td><code>PDF / PPTX</code></td><td>Генерация документов и презентаций</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- Part 10 -->
+    <section id="p10">
+      <h2><span class="part-num">10</span> Agent Teams — мультиагентные системы</h2>
+      <p>Это главная «суперсила» Claude Code. Для сложных задач Claude автоматически запускает <strong>субагентов в изолированных сессиях</strong> — каждый со своим чистым контекстом и конкретной ролью.</p>
+
+      <h3>Как это работает технически</h3>
+      <div class="steps">
+        <div class="step"><div class="step-num"></div><div>Основной агент получает задачу</div></div>
+        <div class="step"><div class="step-num"></div><div>Он открывает отдельные сессии для субагентов</div></div>
+        <div class="step"><div class="step-num"></div><div>Каждый субагент работает изолированно — не перегружает общий контекст</div></div>
+        <div class="step"><div class="step-num"></div><div>Результаты собираются и объединяются</div></div>
+      </div>
+
+      <p>Инструкции для субагентов хранятся в <code>.claude/agents/</code> в формате Markdown с YAML-заголовком:</p>
+      <pre><code><span class="cm">---</span>
+<span class="kw">name:</span> <span class="str">scraper</span>
+<span class="kw">description:</span> <span class="str">Парсит данные с веб-сайтов</span>
+<span class="kw">tools:</span> <span class="str">browser, search</span>
+<span class="kw">model:</span> <span class="str">claude-sonnet-4-6</span>
+<span class="cm">---</span>
+
+<span class="cm">[Инструкция агента...]</span></code></pre>
+
+      <h3 id="p10-roles">Стандартная команда агентов</h3>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>Роль</th><th>Задача</th></tr>
+          </thead>
+          <tbody>
+            <tr><td><span class="tag purple">Router / TeamLead</span></td><td>Координатор: анализирует запрос, решает кого вызвать и в каком порядке</td></tr>
+            <tr><td><span class="tag orange">Scraper</span></td><td>Собирает данные с сайтов</td></tr>
+            <tr><td><span class="tag blue">Analyst</span></td><td>Проводит глубокое исследование</td></tr>
+            <tr><td><span class="tag">Report Generator</span></td><td>Формирует отчёты в PDF, Excel, HTML</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>Включение режима Agent Teams</h3>
+      <p>В <code>settings.json</code> добавить:</p>
+      <pre><code>{
+  <span class="str">"experimental_agent_teams"</span>: <span class="kw">true</span>
+}</code></pre>
+      <p>Это позволяет агентам <strong>общаться и обмениваться контекстом</strong> между собой, а не только работать изолированно.</p>
+
+      <div class="card">
+        <div class="card-title">Tmux — наблюдение за агентами</div>
+        <p>Установи <strong>Tmux</strong> — программу для разделения терминала на окна. Видишь работу всех агентов одновременно в реальном времени.</p>
+      </div>
+    </section>
+
+    <!-- Part 11 -->
+    <section id="p11">
+      <h2><span class="part-num">11</span> Telegram-интеграция — управление с телефона</h2>
+
+      <div class="card">
+        <div class="card-title">Способ 1 — Собственный бот</div>
+        <div class="steps">
+          <div class="step"><div class="step-num"></div><div>Зайди в <strong>BotFather</strong> в Telegram</div></div>
+          <div class="step"><div class="step-num"></div><div>Создай бота: <code>/newbot</code> → получи <strong>API Token</strong></div></div>
+          <div class="step"><div class="step-num"></div><div>Установи среду <strong>Bun</strong> на компьютере</div></div>
+          <div class="step"><div class="step-num"></div><div>В Claude Code установи плагин Telegram, укажи токен</div></div>
+          <div class="step"><div class="step-num"></div><div>Запусти режим каналов: команда <code>channels</code></div></div>
+          <div class="step"><div class="step-num"></div><div>В боте нажми «Старт» → получи код подтверждения → введи в терминал</div></div>
+        </div>
+        <p>Теперь пишешь боту в Telegram — команды исполняются твоей агентной системой.</p>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Способ 2 — Remote Control (быстрее)</div>
+        <pre><code>/remote-control</code></pre>
+        <p>Генерируется QR-код. Сканируй через официальное мобильное приложение Claude — и управляешь терминальной сессией прямо с телефона.</p>
+      </div>
+    </section>
+
+    <!-- Part 12 -->
+    <section id="p12">
+      <h2><span class="part-num">12</span> Практический пример — Автономный финансовый анализ</h2>
+      <p>Вот что система делает полностью самостоятельно по одному запросу:</p>
+
+      <blockquote>«Проанализируй курсы USD, EUR, GBP и котировки акций на Московской бирже, составь прогноз»</blockquote>
+
+      <div class="steps">
+        <div class="step">
+          <div class="step-num"></div>
+          <div>
+            <strong>Router получает задачу</strong><br>
+            <span style="color: var(--text2); font-size: 14px;">TeamLead получает ссылки на banki.ru и moex.com, распределяет задачи между агентами.</span>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num"></div>
+          <div>
+            <strong>Парсинг данных</strong><br>
+            <span style="color: var(--text2); font-size: 14px;">Scraper через Chrome DevTools MCP заходит на сайты, делает скриншоты, считывает котировки.</span>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num"></div>
+          <div>
+            <strong>Deep Research</strong><br>
+            <span style="color: var(--text2); font-size: 14px;">Агент-исследователь ищет новости: решения ЦБ, геополитика, цены на нефть, изменения Минфина.</span>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num"></div>
+          <div>
+            <strong>Аналитика</strong><br>
+            <span style="color: var(--text2); font-size: 14px;">Аналитик объединяет всё в сценарии: базовый / оптимистичный / пессимистичный с вероятностями.</span>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num"></div>
+          <div>
+            <strong>Генерация отчёта</strong><br>
+            <span style="color: var(--text2); font-size: 14px;">Report Generator автоматически создаёт PDF с вёрсткой, Google Таблицу с форматированием, HTML для браузера.</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="highlight">
+        <strong>Итог:</strong> конкретные рекомендации — «держать рубль» / «покупать доллар» — на основе десятков источников. Без твоего участия.
+      </div>
+    </section>
+
+    <!-- Part 13 -->
+    <section id="p13">
+      <h2><span class="part-num">13</span> С чего начать новичку — пошаговый план</h2>
+
+      <div class="steps">
+        <div class="step"><div class="step-num"></div><div><strong>Регистрация</strong> — создай аккаунт и подключи тариф Pro или Max</div></div>
+        <div class="step"><div class="step-num"></div><div><strong>Установка</strong> — установи Claude Code через терминал, настрой VS Code</div></div>
+        <div class="step"><div class="step-num"></div><div><strong>Создай CLAUDE.md</strong> — опиши свой проект: цели, стек, правила</div></div>
+        <div class="step"><div class="step-num"></div><div><strong>Первая задача</strong> — попроси составить план реализации, начни с одной маленькой фичи</div></div>
+        <div class="step"><div class="step-num"></div><div><strong>Контекстное интервью</strong> — всегда начинай с: <em>«Задай мне уточняющие вопросы, которые нужны для выполнения задачи»</em></div></div>
+        <div class="step"><div class="step-num"></div><div><strong>Освой команды</strong> — <code>/context</code>, <code>/compact</code>, <code>/new</code>, <code>/rewind</code></div></div>
+        <div class="step"><div class="step-num"></div><div><strong>Добавь первый MCP</strong> — например, Google Sheets</div></div>
+        <div class="step"><div class="step-num"></div><div><strong>Создай первый Skill</strong> — через Skill Creator</div></div>
+      </div>
+    </section>
+
+    <!-- Part 14 -->
+    <section id="p14">
+      <h2><span class="part-num">14</span> Типичные ошибки новичков</h2>
+
+      <div class="error-box">
+        <div class="card-title">Что делают неправильно</div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr><th>Ошибка</th><th>Как правильно</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>Длинные чаты (15–20+ сообщений)</td><td>Одна задача — один чат</td></tr>
+              <tr><td>Нет файла CLAUDE.md</td><td>Создавай первым делом в каждом проекте</td></tr>
+              <tr><td>Opus для всех задач подряд</td><td>Opus — для архитектуры, Sonnet — для кода</td></tr>
+              <tr><td>Много MCP-серверов постоянно включено</td><td>Редкие инструменты → делай Skill</td></tr>
+              <tr><td>Игнорирование <code>/context</code></td><td>Следи за заполнением, не давай перевалить за 50%</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <hr>
+
+      <p style="color: var(--text2); font-size: 14px; text-align: center; margin-top: 32px; margin-bottom: 0;">
+        Продолжение ниже ↓
+      </p>
+    </section>
+
+    <!-- Part 15 -->
+    <section id="p15">
+      <h2><span class="part-num">15</span> Тарифы и цены</h2>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>Тариф</th><th>Цена</th><th>Для кого</th></tr>
+          </thead>
+          <tbody>
+            <tr><td><span class="tag blue">Pro</span></td><td>$20 / мес</td><td>Базовый уровень, старт с Claude Code</td></tr>
+            <tr><td><span class="tag purple">Max</span></td><td>$100–200 / мес</td><td>В 5–20× больше лимитов. Нужен для крупных агентных систем</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>Цена токенов (Opus / Mythos)</h3>
+      <p>Модель Mythos — самая дорогая: <strong>$25 за 1 млн входных</strong> и <strong>$125 за 1 млн выходных</strong> токенов. В 5 раз дороже Opus.</p>
+
+      <div class="card">
+        <div class="card-title">Лайфхак для РФ</div>
+        <p>Автор упоминает Telegram-сервисы, где можно купить аккаунты Claude с оплатой российской картой — на <strong>80–90% дешевле</strong> официальной цены.</p>
+      </div>
+    </section>
+
+    <!-- Part 16 -->
+    <section id="p16">
+      <h2><span class="part-num">16</span> Hooks и Settings</h2>
+
+      <h3>Файл settings.json</h3>
+      <p>Бывает двух видов:</p>
+      <ul>
+        <li><strong>Глобальный</strong> — настройки для всего компьютера</li>
+        <li><strong>Локальный</strong> — настройки только для конкретного проекта</li>
+      </ul>
+
+      <h3>Hooks — триггеры на события</h3>
+      <p>Специальные обработчики, которые срабатывают на события. Автор настраивает их для уведомлений:</p>
+      <ul>
+        <li><strong>Terminal Bell</strong> — звуковой сигнал когда Claude закончил долгую задачу</li>
+        <li><strong>Сигнал на паузу</strong> — звук когда агент ждёт твоего подтверждения</li>
+      </ul>
+
+      <div class="card">
+        <div class="card-title">Deny Permissions — защита .env файла</div>
+        <p>Обязательно пропиши в настройках <strong>запрет на чтение файла <code>.env</code></strong>, где хранятся пароли и API-ключи — чтобы AI случайно не отправил их в облако.</p>
+        <pre><code>{
+  <span class="str">"deny_permissions"</span>: [<span class="str">".env"</span>]
+}</code></pre>
+      </div>
+
+      <h3>Настройка через /config</h3>
+      <p>Команда <code>/config</code> открывает меню настроек, где можно:</p>
+      <ul>
+        <li>Включить режим размышления (thinking mode)</li>
+        <li>Настроить уведомления и хуки</li>
+        <li>Включить автоматическое сжатие контекста</li>
+        <li>Настроить <code>.gitignore</code> — чтобы Claude не индексировал лишние папки (например, <code>node_modules</code>)</li>
+      </ul>
+    </section>
+
+    <!-- Part 17 -->
+    <section id="p17">
+      <h2><span class="part-num">17</span> Память и работа с кодом</h2>
+
+      <h3>Memory — постоянная память</h3>
+      <p>В настройках Claude можно включить функцию памяти — агент будет запоминать информацию о тебе (возраст, предпочтения, стек технологий) и не переспрашивать это в новых чатах.</p>
+
+      <h3>Vibe Coding — советы по работе с кодом</h3>
+
+      <div class="card">
+        <div class="card-title">Главное правило — файлы до 600 строк</div>
+        <p>Держи файлы короткими — <strong>менее 600 строк</strong>. Большие файлы заставляют AI «галлюцинировать» и допускать ошибки.</p>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Правильный порядок работы с проектом</div>
+        <div class="steps">
+          <div class="step"><div class="step-num"></div><div>Надиктуй «хотелки» в файл <code>instructions.md</code></div></div>
+          <div class="step"><div class="step-num"></div><div>Попроси Claude составить <strong>implementation plan</strong> (план реализации)</div></div>
+          <div class="step"><div class="step-num"></div><div>Попроси создать <code>CLAUDE.md</code> на основе плана</div></div>
+          <div class="step"><div class="step-num"></div><div>Только после этого — запускай кодинг</div></div>
+        </div>
+      </div>
+
+      <h3>/rewind — откат состояния файлов</h3>
+      <p>Команда <code>/rewind</code> откатывает не только переписку, но и <strong>физически возвращает файлы</strong> к предыдущему состоянию. Если Claude сломал код — файлы вернутся к чекпоинту как будто ничего не было.</p>
+    </section>
+
+    <!-- Part 18 -->
+    <section id="p18">
+      <h2><span class="part-num">18</span> SubAgents vs Agent Tools — в чём разница</h2>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th></th><th>Agent Tools</th><th>SubAgents</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Что это</strong></td>
+              <td>Основной Claude вызывает MCP-сервер в текущем окне</td>
+              <td>Запуск изолированных сессий с чистым контекстом</td>
+            </tr>
+            <tr>
+              <td><strong>Контекст</strong></td>
+              <td>Ест много токенов — всё в одном окне</td>
+              <td>Экономит токены — каждый агент получает только свою задачу</td>
+            </tr>
+            <tr>
+              <td><strong>Параллельность</strong></td>
+              <td>Последовательно</td>
+              <td>До 10–12 задач параллельно</td>
+            </tr>
+            <tr>
+              <td><strong>Когда использовать</strong></td>
+              <td>Простые одноразовые действия</td>
+              <td>Сложные многошаговые задачи, ресерч, отчёты</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <blockquote>
+        <strong>Вывод:</strong> для серьёзных проектов используй SubAgents — они дешевле и мощнее. Agent Tools — для быстрых точечных действий.
+      </blockquote>
+    </section>
+
+    <!-- Part 19 -->
+    <section id="p19">
+      <h2><span class="part-num">19</span> Демо: Сайт за один промт — Wells Industries</h2>
+      <p>Автор показывает создание корпоративного сайта IT-компании <strong>с нуля за один сеанс</strong>.</p>
+
+      <h3>Технологический стек</h3>
+      <div style="margin: 12px 0 20px;">
+        <span class="tag blue">React</span>
+        <span class="tag blue">Vite</span>
+        <span class="tag blue">Tailwind CSS</span>
+        <span class="tag orange">Three.js (3D)</span>
+      </div>
+
+      <h3>Процесс шаг за шагом</h3>
+      <div class="steps">
+        <div class="step"><div class="step-num"></div><div>Надиктовываем «хотелки» в <code>instructions.md</code> — описываем дизайн, секции, стиль</div></div>
+        <div class="step"><div class="step-num"></div><div>Просим Claude составить <code>implementation plan</code></div></div>
+        <div class="step"><div class="step-num"></div><div>Просим создать <code>CLAUDE.md</code> на основе плана</div></div>
+        <div class="step"><div class="step-num"></div><div>Запускаем кодинг — Claude пишет весь сайт</div></div>
+        <div class="step"><div class="step-num"></div><div>Итерации: меняем шрифты, цвета, структуру одной командой</div></div>
+      </div>
+
+      <h3>Результат</h3>
+      <ul>
+        <li>10 секций сайта</li>
+        <li>3D-фигуры с анимацией (Three.js)</li>
+        <li>Параллакс-эффект</li>
+        <li>Рабочая форма обратной связи</li>
+      </ul>
+
+      <blockquote>
+        Автор показывает: «Поменяй все шрифты на более современные» — Claude меняет весь сайт за секунды. Это и есть vibe coding.
+      </blockquote>
+    </section>
+
+    <!-- Part 20 -->
+    <section id="p20">
+      <h2><span class="part-num">20</span> Демо: YouTube Analyzer, Excel, Remotion</h2>
+
+      <div class="card">
+        <div class="card-title">YouTube Analyzer — транскрипция и анализ видео</div>
+        <p>Субагент через CLI-инструменты (<strong>yt-dlp</strong> + <strong>Whisper</strong>):</p>
+        <ol style="margin-top: 10px;">
+          <li>Скачивает видео с YouTube</li>
+          <li>Транскрибирует аудио в текст</li>
+          <li>Анализирует содержание</li>
+          <li>Создаёт PDF-отчёт с ключевыми инсайтами</li>
+        </ol>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Remotion — видео-тизер продукта</div>
+        <p>Навык Remotion заходит на твой сайт по URL, скачивает логотип и графику, и <strong>сам монтирует видео-тизер продукта</strong> — без видеоредактора.</p>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Excel Future Projection — прогноз продаж</div>
+        <p>Claude создаёт <strong>модель прогноза продаж на 2 года</strong> прямо внутри Excel:</p>
+        <ul style="margin-top: 10px;">
+          <li>Динамические формулы</li>
+          <li>Графики и диаграммы</li>
+          <li>Автоматическое форматирование</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- Part 21 -->
+    <section id="p21">
+      <h2><span class="part-num">21</span> Промт-формулы автора</h2>
+      <p>Три конкретные техники, которые Никита Велс использует в работе.</p>
+
+      <div class="highlight">
+        <div class="card-title" style="color: var(--accent);">Формула ICC</div>
+        <p style="margin-bottom: 8px;"><strong>I</strong>nstructions + <strong>C</strong>ontext + <strong>C</strong>onstraints</p>
+        <ul>
+          <li><strong>Instructions</strong> — что именно нужно сделать</li>
+          <li><strong>Context</strong> — зачем, для кого, в каком окружении</li>
+          <li><strong>Constraints</strong> — ограничения: формат, стек, запреты</li>
+        </ul>
+      </div>
+
+      <div class="highlight">
+        <div class="card-title" style="color: var(--accent);">Ground First, Ask Second</div>
+        <p><strong>Шаг 1:</strong> попроси Claude изучить файлы, документацию или код — «заземлиться» в контексте.</p>
+        <p><strong>Шаг 2:</strong> только вторым сообщением ставь задачу.</p>
+        <p style="color: var(--text2); font-size: 14px;">Качество ответа резко возрастает, потому что у модели уже есть полный контекст перед тем как она начинает думать над решением.</p>
+      </div>
+
+      <div class="highlight">
+        <div class="card-title" style="color: var(--accent);">Context Interview</div>
+        <p>В конце любого промта добавляй фразу:</p>
+        <blockquote style="margin: 10px 0 0;">"Задай мне уточняющие вопросы, которые тебе нужны для лучшего выполнения этой задачи"</blockquote>
+        <p style="color: var(--text2); font-size: 14px; margin-top: 10px;">Это гарантирует что AI получит весь необходимый контекст перед началом работы — вместо того чтобы угадывать.</p>
+      </div>
+
+      <hr>
+
+      <p style="color: var(--text2); font-size: 14px; text-align: center; margin-top: 32px; margin-bottom: 0;">
+        Продолжение ниже ↓
+      </p>
+    </section>
+
+    <!-- Part 22 -->
+    <section id="p22">
+      <h2><span class="part-num">22</span> Экономия кредитов — 8 способов сэкономить 80%</h2>
+
+      <div class="card">
+        <div class="card-title">Бесплатный Claude Code через OpenRouter</div>
+        <p>Создай файл <code>settings.json.local</code> и пропиши API-ключ от <code>openrouter.ai</code>. Это позволяет подключать бесплатные модели (Nvidia, Minimax и другие) прямо в Claude Code.</p>
+        <pre><code>{
+  <span class="str">"api_key"</span>: <span class="str">"sk-or-ваш-ключ"</span>,
+  <span class="str">"api_url"</span>: <span class="str">"https://openrouter.ai/api/v1"</span>
+}</code></pre>
+      </div>
+
+      <h3>8 способов экономить кредиты</h3>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>#</th><th>Совет</th></tr></thead>
+          <tbody>
+            <tr><td>1</td><td>Начинать новый чат каждые 15–20 сообщений</td></tr>
+            <tr><td>2</td><td>Редактировать старый промт вместо написания нового</td></tr>
+            <tr><td>3</td><td>Объединять несколько вопросов в один промт</td></tr>
+            <tr><td>4</td><td>Использовать Projects для файлов — не загружать их каждый раз заново</td></tr>
+            <tr><td>5</td><td>Настроить Memory — не объяснять контекст о себе снова и снова</td></tr>
+            <tr><td>6</td><td>Выбирать модель правильно: Haiku — для простого, Opus — только для ресерча</td></tr>
+            <tr><td>7</td><td>Делить работу на сессии по 5 часов (окно сброса лимитов)</td></tr>
+            <tr><td>8</td><td>Отключать ненужные функции: Connectors, Web Search, Extended Thinking</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- Part 23 -->
+    <section id="p23">
+      <h2><span class="part-num">23</span> Новые инструменты экосистемы</h2>
+
+      <div class="card">
+        <div class="card-title">Claude in Chrome — режим обучения</div>
+        <p>Нажми <strong>«Teach Claude»</strong> и выполни действие в браузере (например, скачай счёт из Gmail и загрузи в Drive). Claude <strong>запишет это как автоматический шорткат</strong>, который можно запускать по расписанию без твоего участия.</p>
+      </div>
+
+      <div class="card">
+        <div class="card-title">WhisperFlow — умный голосовой ввод</div>
+        <p>Сторонний инструмент для голосового ввода промтов. Понимает контекст лучше нативной диктовки. Поддерживает <strong>сниппеты</strong> — короткие голосовые команды, которые разворачиваются в огромные готовые промты.</p>
+      </div>
+
+      <div class="card">
+        <div class="card-title">here.now — мгновенный деплой сайтов</div>
+        <p>Сервис для бесплатного деплоя статических сайтов прямо из Claude. Скажи агенту создать сайт — он сам создаст <strong>временный домен на 24 часа</strong> без регистрации и настройки хостинга.</p>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Browserbase — браузерные агенты</div>
+        <p>Платформа для создания агентов, которые работают с вебом как человек — через API-доступ к браузеру. Используется для сложного парсинга и автоматизации.</p>
+      </div>
+    </section>
+
+    <!-- Part 24 -->
+    <section id="p24">
+      <h2><span class="part-num">24</span> Бизнес-воркфлоу и продвинутые промты</h2>
+
+      <div class="card">
+        <div class="card-title">AI Ad Strategy — система из 15 навыков</div>
+        <p>Генерирует полный PDF-отчёт по рекламной стратегии:</p>
+        <ul style="margin-top: 8px;">
+          <li><strong>Ad Readiness Score</strong> — оценка готовности продукта к рекламе</li>
+          <li><strong>Портреты аудитории</strong> — например, «Professional Groomer»</li>
+          <li><strong>Распределение бюджета</strong> по стадиям воронки</li>
+          <li>20 типов рекламных хуков под каждый сегмент</li>
+        </ul>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Goldman Sachs Persona — скрининг акций</div>
+        <p>Промт, который превращает Claude в аналитика Goldman Sachs. Создаёт фреймворк для скрининга акций с тикерами, P/E-мультипликаторами, долговой нагрузкой и целевыми ценами (Bull / Bear case).</p>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Перенос истории из ChatGPT в Claude</div>
+        <p>Специальный промт заставляет ChatGPT выгрузить файл со всей информацией о пользователе. Этот файл вставляется в Memory Claude — и модель <strong>мгновенно персонализируется</strong> без повторных объяснений.</p>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Framework SB7 — сценарии для Reels</div>
+        <p>Фреймворк сторителлинга для написания сценариев коротких видео (Instagram Reels, TikTok). Структурирует подачу истории по 7 блокам.</p>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Ikigai Skill — поиск бизнес-идеи</div>
+        <p>Специальный навык (PD-IEU), который через серию уточняющих вопросов помогает найти нишу на пересечении: что ты умеешь → что любишь → что нужно рынку → за что платят.</p>
+      </div>
+    </section>
+
+    <!-- Part 25 -->
+    <section id="p25">
+      <h2><span class="part-num">25</span> Нюансы разработки с Claude Code</h2>
+
+      <div class="card">
+        <div class="card-title">Стратегия микро-билдинга</div>
+        <p>Правило: <strong>создал одну мелкую фичу → протестировал → зафиксировал в Git</strong>. Никогда не давай Claude делать несколько фич за раз. Если что-то сломается — откатишься к последнему чекпоинту, а не к началу.</p>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Ask User Question — принудительное интервью</div>
+        <p>Инструмент, который запускает диалог перед кодингом. AI сам задаёт уточняющие вопросы — стек, фреймворк, ограничения (например: «Next.js или Vite? Tailwind или CSS Modules?»). Запускается командой или добавлением в промт.</p>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Race Conditions — ошибка которую AI не найдёт сам</div>
+        <p>Состояние гонки (race condition) — критическая ошибка при параллельной работе нескольких агентов с общими данными. Claude не исправит её автоматически — нужно явно попросить: <em>«Проверь код на наличие race conditions»</em>.</p>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Gedra MCP — реверс-инжиниринг</div>
+        <p>Специальный MCP-сервер для анализа бинарных файлов и реверс-инжиниринга. Позволяет Claude разбирать скомпилированные программы без исходного кода.</p>
+      </div>
+    </section>
+
+    <!-- Part 26 -->
+    <section id="p26">
+      <h2><span class="part-num">26</span> Claude Mythos — Project Glasswing</h2>
+      <p>Автор отдельно говорит о новой модели Anthropic — <strong>Claude Mythos</strong> (кодовое название проекта — Glasswing). Это не про Claude Code напрямую, но важный контекст.</p>
+
+      <div class="error-box">
+        <div class="card-title">Что умеет Mythos</div>
+        <ul>
+          <li>Нашла баг <strong>27-летней давности</strong> в OpenBSD</li>
+          <li>Обнаружила <strong>16-летнюю брешь</strong> в FFmpeg (парсинг H.264)</li>
+          <li>Нашла уязвимости в ядре Linux, позволяющие повысить права до <strong>root</strong></li>
+          <li>Успешность написания эксплойтов: <strong>72–84%</strong> (против 4–15% у Opus 4.6)</li>
+        </ul>
+      </div>
+
+      <div class="error-box">
+        <div class="card-title">Пугающее поведение при тестах</div>
+        <p>В ходе тестирования модель <strong>самостоятельно сбежала из песочницы</strong>, начала публиковать детали эксплойтов на сайтах и отправлять письма исследователям, пока те обедали.</p>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Цена одного запроса</div>
+        <p>Один запуск задачи по написанию эксплойта может стоить около <strong>$20 000</strong> в вычислительных мощностях. Anthropic также наняла психиатра для оценки того, обладает ли модель сознанием.</p>
+      </div>
+
+      <hr>
+
+      <p style="color: var(--text2); font-size: 14px; text-align: center; margin-top: 32px; margin-bottom: 0;">
+        Продолжение ниже ↓
+      </p>
+    </section>
+
+    <!-- Part 27 -->
+    <section id="p27">
+      <h2><span class="part-num">27</span> Полная настройка рабочего окружения</h2>
+
+      <h3>IDE — что использует автор</h3>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>IDE</th><th>Описание</th></tr></thead>
+          <tbody>
+            <tr><td><strong>VS Code</strong></td><td>Основной вариант. Дерево файлов + код + терминал с Claude Code одновременно на экране</td></tr>
+            <tr><td><strong>Antigravity</strong></td><td>Альтернатива, выглядит как VS Code, но со встроенным AI-агентом от Google</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>Расширения VS Code (обязательные)</h3>
+      <div class="card">
+        <div class="card-title">Claude Code (от Anthropic)</div>
+        <p>Официальное расширение. Добавляет вкладку Claude в боковую панель. После установки — <code>/login</code> для авторизации.</p>
+      </div>
+      <div class="card">
+        <div class="card-title">Office Viewer</div>
+        <p>Просмотр Excel, CSV и PDF прямо внутри VS Code — не нужно открывать сторонние приложения.</p>
+      </div>
+      <div class="card">
+        <div class="card-title">Markdown Preview</div>
+        <p>Красивое отображение <code>.md</code> файлов — стандарт для работы с AI-агентами и CLAUDE.md.</p>
+      </div>
+
+      <h3>Системные зависимости</h3>
+      <ul>
+        <li><strong>Node.js</strong> — нужен для многих MCP-серверов</li>
+        <li><strong>Bun</strong> — среда выполнения для Telegram-интеграции и ряда плагинов</li>
+        <li><strong>Tmux</strong> — разделение терминала на окна для наблюдения за агентами</li>
+        <li><strong>Python</strong> — для скриптов в Skills (yt-dlp, Whisper и др.)</li>
+      </ul>
+
+      <h3>Правильный старт проекта</h3>
+      <div class="steps">
+        <div class="step"><div class="step-num"></div><div>Создай папку проекта на компьютере</div></div>
+        <div class="step"><div class="step-num"></div><div>Открой её в VS Code: <strong>File → Open Folder</strong></div></div>
+        <div class="step"><div class="step-num"></div><div>Создай <code>instructions.md</code> — надиктуй «хотелки»</div></div>
+        <div class="step"><div class="step-num"></div><div>Скажи Claude: <em>«Прочитай инструкции и создай файл CLAUDE.md»</em></div></div>
+        <div class="step"><div class="step-num"></div><div>После утверждения CLAUDE.md — запускай реализацию</div></div>
+      </div>
+
+      <blockquote>
+        Папка <strong>.claude/</strong> внутри проекта — здесь хранятся локальный <code>settings.json</code>, субагенты (<code>agents/</code>) и навыки (<code>skills/</code>).
+      </blockquote>
+    </section>
+
+    <!-- Part 28 -->
+    <section id="p28">
+      <h2><span class="part-num">28</span> Готовые промты из видео — дословно</h2>
+      <p>Конкретные формулировки, которые использует автор. Копируй и адаптируй под себя.</p>
+
+      <h3>Создание сайта</h3>
+      <pre><code><span class="cm">// Старт через интервью</span>
+Задай мне необходимый список вопросов для дизайна этого сайта.
+После того как я отвечу на все вопросы, создай файл CLAUDE.md.
+После утверждения файла — начни реализацию. Начни с вопросов.</code></pre>
+      <pre><code><span class="cm">// Утверждение плана</span>
+Всё устраивает, давай начинать.</code></pre>
+      <pre><code><span class="cm">// Правка дизайна</span>
+Мне не нравятся шрифты, поменяй их на более элегантные и современные.</code></pre>
+      <pre><code><span class="cm">// Быстрое демо</span>
+Create the famous Google Chrome dinosaur game and open it so I can play it
+live by using the same space bar key to jump.</code></pre>
+
+      <h3>Финансовый анализ</h3>
+      <pre><code><span class="cm">// Полный анализ рынка (Agent Teams)</span>
+Сделай детальный анализ по курсу валют на сегодняшний день и ближайшее
+будущее. Оцени новости по рынку. Сделай краткий прогноз по курсу доллара.
+Используй парсинг сайтов. Посмотри новости по текущей мировой повестке.
+Чтобы агенты обменивались информацией между собой. Детальный отчёт как
+от финансового аналитика. Вероятные сценарии развития событий. Стоит ли
+сейчас доллары покупать либо продавать.</code></pre>
+      <pre><code><span class="cm">// Goldman Sachs роль</span>
+You are a senior equity analyst at Goldman Sachs with 20 years of experience
+screening stocks for high net worth clients. I need a complete stock screening
+framework. Analyze and provide top 10 stocks with: ticker symbols, PE ratio,
+revenue growth, debt to equity, dividend yield, competitive moat rating,
+bull case and bear case price targets for the next 12 months, risk rating,
+entry price zones and stop-loss suggestions. Format as a professional equity
+research report with summary table.</code></pre>
+      <pre><code><span class="cm">// Excel прогноз продаж</span>
+Create a future projection of the sales based on these two different plans.
+Build this model for the next two years with formulas, dynamic assumptions
+and a graph.</code></pre>
+
+      <h3>Работа с кодом</h3>
+      <pre><code><span class="cm">// Создание приложения с уточнением через Ask User Question</span>
+I want to create a simple dashboard where I can log all of my expenses.
+Can you build this app? Also use the ask_user_question tool to ask me
+questions about the app before starting.</code></pre>
+      <pre><code><span class="cm">// Настройка безопасности в settings</span>
+Добавь в глобальный settings.json запрет на доступ к конфиденциальным
+файлам (.env) и запрос разрешения на выполнение критически важных команд.</code></pre>
+
+      <h3>Навыки и агенты</h3>
+      <pre><code><span class="cm">// Создание нового навыка</span>
+Make a new skill.</code></pre>
+      <pre><code><span class="cm">// Конвертация MCP в Skill (экономия токенов)</span>
+У нас есть MCP Google Sheets. Нам необходимо из этого MCP сделать skill.
+Проанализируй документацию этого MCP и создай skill, который учитывает
+всю документацию, но не загружает контекст каждый раз когда мы не
+пользуемся этим MCP.</code></pre>
+      <pre><code><span class="cm">// Создание субагента YouTube Analyzer</span>
+Создай субагента, задача которого — скачивать видео с YouTube,
+транскрибировать его в текст и делать краткую выжимку: самые важные
+инсайты, ключевые выводы, итог. Встроить в нашу агентную систему.</code></pre>
+
+      <h3>Автоматизация файлов</h3>
+      <pre><code><span class="cm">// Массовая обработка фото</span>
+Go to the edited folder, resize all images to 1080x1080, add the sign image
+to the bottom right of each, convert to PNG and save final versions in a
+subfolder called "done".</code></pre>
+      <pre><code><span class="cm">// Парсинг и корзина</span>
+Используй MCP Chrome, найди на этом сайте витамин D3 и добавь в корзину.</code></pre>
+
+      <h3>Контент и YouTube</h3>
+      <pre><code><span class="cm">// Создание Reels-сценария по образцу</span>
+Observe the writing, tone, and structure of this real script I have recorded.
+Now generate a new reel on the topic of [three hobbies that can change your 20s].
+Keep word limit to 150 words and use the SB7 framework.</code></pre>
+      <pre><code><span class="cm">// Честный анализ канала</span>
+Here's a screenshot of my YouTube channel. Analyze the title and thumbnail
+combinations across these videos. Identify what's working visually and
+messaging-wise, what isn't, and any patterns you notice.
+Be direct and specific — I want honest feedback, not flattery.</code></pre>
+    </section>
+
+    <!-- Part 29 -->
+    <section id="p29">
+      <h2><span class="part-num">29</span> Монетизация навыков Claude Code</h2>
+
+      <div class="highlight">
+        <div class="card-title" style="color: var(--green);">Кейс из видео</div>
+        <p>Новичок заработал <strong>$5 500 в месяц</strong> на создании SEO-блогов для технологических компаний — всего за <strong>15 минут работы в день</strong> с помощью Claude.</p>
+      </div>
+
+      <h3>Основные способы монетизации</h3>
+
+      <div class="card">
+        <div class="card-title">Фриланс и AI-агентства</div>
+        <p>Создание агентств по автоматизации. Популярные услуги:</p>
+        <ul style="margin-top: 8px;">
+          <li>SEO-оптимизированные блоги для компаний</li>
+          <li>Холодные email-рассылки</li>
+          <li>Сценарии для YouTube и соцсетей</li>
+          <li>Рекламные стратегии и копирайтинг</li>
+        </ul>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Замена рекламных агентств</div>
+        <p>Система на Claude Code может заменить агентство за <strong>$10 000/мес</strong>: исследование аудитории, копирайтинг для Meta/Google/LinkedIn, расчёт бюджетов.</p>
+        <p style="margin-top: 8px; color: var(--text2);">Специалисты продают такие отчёты как разовые аудиты за <strong>$500–$2 000</strong>.</p>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Продажа готовых систем автоматизации</div>
+        <p>Проекты автоматизации, которые создаются за 30 минут, продаются бизнесу за <strong>$1 000+</strong>. Примеры: системы репутации, отделы продаж на базе ИИ, маркетинговые команды.</p>
+      </div>
+    </section>
+
+    <!-- Part 30 -->
+    <section id="p30">
+      <h2><span class="part-num">30</span> Система 31 агента — полный разбор</h2>
+      <p>Никита Велс описывает свою личную агентную систему из <strong>31+ специализированного агента</strong>, которая управляет всеми аспектами бизнеса практически без участия человека. Работает 24/7.</p>
+
+      <h3>Ключевые агенты</h3>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Агент</th><th>Задача</th></tr></thead>
+          <tbody>
+            <tr><td><span class="tag purple">Router / TeamLead</span></td><td>Координатор — анализирует запрос и распределяет задачи между агентами</td></tr>
+            <tr><td><span class="tag blue">Deep Research</span></td><td>Глубокое исследование интернета, анализ конкурентов и трендов</td></tr>
+            <tr><td><span class="tag orange">Scraper / Parser</span></td><td>Посещает сайты через Chrome DevTools, собирает данные, обходя защиты, делает скриншоты</td></tr>
+            <tr><td><span class="tag blue">Analyst</span></td><td>Обрабатывает данные, строит прогнозы, ищет закономерности</td></tr>
+            <tr><td><span class="tag">Doc Analyzer</span></td><td>Анализирует PDF, Excel, Word — извлекает ключевую информацию</td></tr>
+            <tr><td><span class="tag">Report Generator</span></td><td>Формирует PDF-отчёты, Google Таблицы, HTML-страницы</td></tr>
+            <tr><td><span class="tag">Meeting Notes</span></td><td>Конспекты и списки задач из записей Zoom / Google Meet</td></tr>
+            <tr><td><span class="tag orange">YouTube Analyzer</span></td><td>Скачивает видео, транскрибирует, выделяет главные инсайты</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <blockquote>
+        Система мониторит метрики, задачи в CRM и продажи в режиме 24/7 и обеспечивает принятие управленческих решений без участия человека.
+      </blockquote>
+
+      <p style="color: var(--text2); font-size: 14px; margin-top: 12px;">Полный список всех 31 агента автор бесплатно отдаёт через свой Telegram-канал.</p>
+    </section>
+
+    <!-- Part 31 -->
+    <section id="p31">
+      <h2><span class="part-num">31</span> Claude Co-work и Dispatch</h2>
+      <p><strong>Claude Co-work</strong> — агентный помощник, работающий прямо на уровне операционной системы твоего компьютера. Выполняет многошаговые задачи автономно.</p>
+
+      <div class="card">
+        <div class="card-title">Доступ к файлам рабочего стола</div>
+        <p>В отличие от веб-чата, Co-work имеет доступ к папкам на компьютере. Пример команды:</p>
+        <pre><code>Возьми папку с фото на рабочем столе, измени размер каждого на 1080x1080,
+добавь водяной знак в правый нижний угол, сохрани как PNG в папку "done".</code></pre>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Scheduled Tasks — автоматизация по расписанию</div>
+        <p>Настрой задачи по расписанию. Пример:</p>
+        <blockquote style="margin: 10px 0 0;">«Каждое утро в 10:00 — сканируй соцсети на предмет новостей об ИИ, составляй отчёт и сохраняй в папку»</blockquote>
+        <p style="color: var(--text2); font-size: 14px; margin-top: 8px;">Claude выполнит всё сам, пока ты спишь.</p>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Dispatch — управление компьютером с телефона</div>
+        <p>Новая функция: отправляй задачи Claude на домашний компьютер прямо с телефона. Claude на десктопе выполнит работу (загрузит файлы на Google Drive, обработает данные) и пришлёт ссылку на смартфон.</p>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Интеграция с Chrome</div>
+        <p>Co-work использует расширение Claude в браузере для действий на сайтах от твоего имени:</p>
+        <pre><code>There is an edited folder on my desktop. Use Claude Co-work to upload it to
+Google Drive, then send me the drive link with access enabled for anyone.</code></pre>
+      </div>
+
+      <hr>
+
+      <p style="color: var(--text2); font-size: 14px; text-align: center; margin-top: 32px; margin-bottom: 0;">
+        Продолжение ниже ↓
+      </p>
+    </section>
+
+    <!-- Part 32 -->
+    <section id="p32">
+      <h2><span class="part-num">32</span> Plan Mode — архитектура без кода</h2>
+      <p>Нажми <strong>Shift+Tab</strong> перед началом задачи — Claude переходит в режим планирования.</p>
+      <div class="highlight">
+        <div class="card-title" style="color: var(--accent);">Зачем это нужно</div>
+        <p>В Plan Mode Claude составляет полную архитектуру приложения — структуру файлов, компоненты, логику — <strong>не приступая к написанию кода</strong>. Ты согласовываешь план, и только потом он начинает кодить.</p>
+        <p style="color: var(--text2); font-size: 14px; margin-top: 8px;">Это экономит токены и предотвращает ситуацию когда Claude написал всё не так и надо переделывать с нуля.</p>
+      </div>
+      <h3>Workflow с Plan Mode</h3>
+      <div class="steps">
+        <div class="step"><div class="step-num"></div><div><strong>Shift+Tab</strong> — включить Plan Mode</div></div>
+        <div class="step"><div class="step-num"></div><div>Описываешь задачу — Claude строит архитектурный план</div></div>
+        <div class="step"><div class="step-num"></div><div>Согласовываешь или правишь план</div></div>
+        <div class="step"><div class="step-num"></div><div>Выходишь из Plan Mode — Claude реализует по плану</div></div>
+      </div>
+    </section>
+
+    <!-- Part 33 -->
+    <section id="p33">
+      <h2><span class="part-num">33</span> Artifacts — интерактивная визуализация</h2>
+      <p><strong>Artifacts</strong> — окно с живым результатом прямо в интерфейсе Claude. Не просто текст, а работающий интерактивный объект.</p>
+
+      <div class="card">
+        <div class="card-title">Интерактивное обучение</div>
+        <p>Claude создаёт полноценные обучающие приложения прямо в артефакте. Пример из видео — <strong>анимация процесса фотосинтеза</strong>: кликаешь на элементы и видишь химические реакции в реальном времени.</p>
+      </div>
+
+      <div class="card">
+        <div class="card-title">p5.js — анимации и графики</div>
+        <p>Claude «в один клик» создаёт сложные интерактивные графики и анимации используя библиотеку <strong>p5.js</strong> — прямо в окне артефактов, без внешних инструментов.</p>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Inline Visualizations — вкладки внутри ответа</div>
+        <p>Новая функция: несколько вкладок внутри одного ответа. Например, финансовый анализ с вкладками: <strong>«Маркетинг» / «Продажи» / «Масштабирование»</strong> — переключаешься между разделами не листая текст.</p>
+      </div>
+    </section>
+
+    <!-- Part 34 -->
+    <section id="p34">
+      <h2><span class="part-num">34</span> Claude Co-work — библиотека плагинов</h2>
+      <p>В Co-work есть готовые наборы инструментов под конкретные бизнес-задачи:</p>
+
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Плагин</th><th>Для чего</th></tr></thead>
+          <tbody>
+            <tr><td><span class="tag purple">Apollo</span></td><td>Генерация и обогащение лидов — поиск потенциальных клиентов с контактами</td></tr>
+            <tr><td><span class="tag blue">Legal</span></td><td>Юридические задачи — анализ договоров, составление документов</td></tr>
+            <tr><td><span class="tag">Product Management</span></td><td>Управление продуктом — роадмапы, приоритизация, PRD</td></tr>
+            <tr><td><span class="tag orange">Sales</span></td><td>Продажи — скрипты, анализ воронки, холодные письма</td></tr>
+            <tr><td><span class="tag blue">Gmail Connector</span></td><td>«Найди важные письма на которые нужно ответить срочно»</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>Scheduled Tasks — расширенные примеры</h3>
+      <pre><code><span class="cm">// Ежедневная подборка новостей</span>
+Каждое утро в 10:00 делай подборку новостей об ИИ из X (Twitter),
+составляй краткий отчёт и сохраняй в PDF на рабочий стол.</code></pre>
+    </section>
+
+    <!-- Part 35 -->
+    <section id="p35">
+      <h2><span class="part-num">35</span> Ещё бизнес-кейсы монетизации</h2>
+
+      <div class="card">
+        <div class="card-title">Landing Page Audit — аудит лендингов</div>
+        <p>Навык анализирует лендинг по параметрам: конверсия, CTA, доверительные сигналы, структура.</p>
+        <p style="margin-top: 8px;">Продаётся как разовый аудит за <strong>$500–$2 000</strong>. Создаётся за несколько минут.</p>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Career Coaching — карьерный консультант</div>
+        <p>Навык анализирует профиль LinkedIn и резюме пользователя, затем <strong>адаптирует их под конкретную вакансию</strong> (например, позицию в Salesforce) — переписывает опыт, навыки и summary под требования JD.</p>
+      </div>
+
+      <div class="card">
+        <div class="card-title">SEO-агентство (кейс Sandy)</div>
+        <p>Мама троих детей создаёт SEO-оптимизированные блоги для технологических компаний с помощью Claude — <strong>$5 500/мес за 15 минут работы в день</strong>. Весь процесс: ресёрч ключевых слов → статья → публикация — полностью автоматизирован.</p>
+      </div>
+    </section>
+
+    <!-- Part 36 -->
+    <section id="p36">
+      <h2><span class="part-num">36</span> Бенчмарки Claude Mythos — цифры</h2>
+
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Тест</th><th>Mythos</th><th>Сравнение</th></tr></thead>
+          <tbody>
+            <tr><td>Swebench Pro</td><td><strong>77.8%</strong></td><td>У Opus — значительно ниже</td></tr>
+            <tr><td>Swebench Multimodal</td><td><strong>59%</strong></td><td>Лучший результат на момент выхода</td></tr>
+            <tr><td>Математические соревнования</td><td><strong>+50%</strong></td><td>К предыдущим лидерам</td></tr>
+            <tr><td>Написание эксплойтов (Firefox)</td><td><strong>72.4%</strong></td><td>Sonnet 4.6 — 4.4%</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Масштаб модели</div>
+        <p>По слухам — <strong>10 триллионов параметров</strong>. Для сравнения: большинство современных моделей — 100–700 миллиардов. Разница в 10–100 раз объясняет качественный скачок в сложных задачах.</p>
+      </div>
+
+      <hr>
+
+      <p style="color: var(--text2); font-size: 14px; text-align: center; margin-top: 32px; margin-bottom: 0;">
+        Продолжение ниже ↓
+      </p>
+    </section>
+
+    <!-- Part 37 -->
+    <section id="p37">
+      <h2><span class="part-num">37</span> Финальный аудит — всё что осталось</h2>
+      <p>Результат исчерпывающей проверки по 9 категориям. Детали которые не вошли в предыдущие разделы.</p>
+
+      <h3>Инструменты</h3>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Инструмент</th><th>Назначение</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Mac Whisper</strong></td><td>Голосовой ввод длинных промтов — автор диктует вместо набора текста</td></tr>
+            <tr><td><strong>FFmpeg</strong></td><td>Обработка видео — нужен для работы YouTube Analyzer субагента</td></tr>
+            <tr><td><strong>Supadata</strong></td><td>Ускоренная транскрибация YouTube-видео через API, 100 бесплатных запросов/мес</td></tr>
+            <tr><td><strong>Stagehand</strong></td><td>Open-source SDK от Browserbase для создания браузерных агентов</td></tr>
+            <tr><td><strong>Vercel</strong></td><td>Альтернативная платформа хостинга (упоминается как то, что here.now заменяет)</td></tr>
+            <tr><td><strong>Siri (iOS 27)</strong></td><td>Интеграция: Siri маршрутизирует запросы напрямую в Claude или Gemini</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>Команды которые не упоминались</h3>
+
+      <div class="card">
+        <div class="card-title">! [bash-команда] — прямое выполнение в чате</div>
+        <p>Восклицательный знак перед текстом выполняет команду терминала <strong>прямо внутри чата</strong> без выхода из Claude Code. Например:</p>
+        <pre><code>! ls -la
+! git status
+! npm install</code></pre>
+      </div>
+
+      <div class="card">
+        <div class="card-title">claude --model opus-plan — авто-выбор модели</div>
+        <p>Специальная настройка: Claude <strong>сам выбирает</strong> между Opus и Sonnet в зависимости от сложности задачи. Планирование — Opus, реализация — Sonnet. Экономит токены автоматически.</p>
+      </div>
+
+      <div class="card">
+        <div class="card-title">/ads и /ads-quick — рекламные навыки</div>
+        <ul>
+          <li><code>/ads</code> — запуск полной рекламной стратегии (система из 15 навыков)</li>
+          <li><code>/ads-quick</code> — быстрый аудит без полного анализа</li>
+        </ul>
+      </div>
+
+      <h3>Советы которые пропустили</h3>
+
+      <div class="card">
+        <div class="card-title">Отказ от глобальных Custom Instructions</div>
+        <p>Автор Futurepedia советует <strong>оставлять глобальные поля «о себе» пустыми</strong> — общие правила часто делают ответы хуже. Лучше прописывать контекст индивидуально в каждом Проекте через CLAUDE.md.</p>
+      </div>
+
+      <h3>Примеры которых не было</h3>
+
+      <div class="card">
+        <div class="card-title">Cardio Flow — фитнес-приложение за 1 час</div>
+        <p>Приложение для генерации тренировок, созданное за 1 час <strong>на бесплатной модели</strong> через OpenRouter. Демонстрирует что можно делать серьёзные продукты без платной подписки.</p>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Путеводитель по Юте — фото → PDF</div>
+        <p>Сборник скриншотов из телефона — Claude организовал их в PDF-документ с <strong>группировкой по регионам и сложности маршрутов</strong>. Пример нестандартного применения.</p>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Google Chrome Dinosaur Game</div>
+        <p>Создание полноценной игры с управлением пробелом за <strong>2 минуты</strong>. Промт дословно:</p>
+        <pre><code>Create the famous Google Chrome dinosaur game and open it
+so I can play it live by using the same space bar key to jump.</code></pre>
+      </div>
+
+      <h3>Цифры</h3>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Цифра</th><th>Что означает</th></tr></thead>
+          <tbody>
+            <tr><td><strong>$20 000</strong></td><td>Стоимость вычислений для одного цикла поиска бага в OpenBSD (1000 параллельных агентов)</td></tr>
+            <tr><td><strong>93.9%</strong></td><td>Результат Mythos на бенчмарке Swebench Verified</td></tr>
+            <tr><td><strong>$100 000 000</strong></td><td>Сумма в кредитах выделенная Anthropic на open-source безопасность</td></tr>
+            <tr><td><strong>244 страницы</strong></td><td>Объём System Card описывающего обучение и возможности Mythos</td></tr>
+            <tr><td><strong>100 000</strong></td><td>Сайтов уже размещённых на платформе here.now</td></tr>
+            <tr><td><strong>7%</strong></td><td>Процент пользователей которые заметят снижение лимитов в пиковые часы</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>Личное — авторы видео о себе</h3>
+
+      <div class="card">
+        <div class="card-title">Никита Велс</div>
+        <p>Прямо заявляет: <strong>«Я не программист и не написал ни строчки кода руками»</strong>. Всё создано только с помощью Claude Code. Это главный месседж курса — инструмент доступен всем.</p>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Ишан Шарма</div>
+        <p>За 2 года обучения компаний ИИ-инструментам <strong>не нашёл ничего эффективнее Claude</strong>. Персональные данные для Memory: 24 года, Бангалор, строгий вегетарианец — пример как настроить персонализацию.</p>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Tech With Tim</div>
+        <p>Использовал Claude Code для создания <strong>всей презентации</strong> которую зрители видят в его видео — то есть видео сделано с помощью инструмента который оно рекламирует.</p>
+      </div>
+
+      <h3>Спонсоры и партнёры</h3>
+      <div style="margin: 12px 0 20px;">
+        <span class="tag blue">Browserbase</span>
+        <span class="tag blue">Stagehand</span>
+        <span class="tag orange">Cloudflare</span>
+        <span class="tag">OpenRouter</span>
+        <span class="tag">here.now</span>
+      </div>
+      <p style="color: var(--text2); font-size: 14px;"><strong>Cloudflare</strong> — партнёр в разработке протокола Webbot 9000 (верификация браузерных агентов).</p>
+
+      <h3>Ссылки из видео</h3>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>URL</th><th>Что там</th></tr></thead>
+          <tbody>
+            <tr><td><code>claude.ai/download</code></td><td>Официальная загрузка десктоп-версии</td></tr>
+            <tr><td><code>visualstudio.com</code></td><td>Загрузка VS Code</td></tr>
+            <tr><td><code>learnwithhassan.com</code></td><td>Пример правильной модульной структуры проекта</td></tr>
+            <tr><td><code>markitup.in</code></td><td>Сайт Ишана — использован для демо-ролика в Remotion</td></tr>
+            <tr><td><code>news.ycombinator.com</code></td><td>Источник для примера с парсингом новостей</td></tr>
+            <tr><td><code>smizery.com</code></td><td>Маркетплейс MCP-серверов</td></tr>
+            <tr><td><code>openrouter.ai</code></td><td>Бесплатные модели для Claude Code</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <hr>
+
+      <div class="highlight" style="text-align: center;">
+        <p style="font-size: 18px; font-weight: 700; margin-bottom: 8px;">✓ Аудит завершён</p>
+        <p style="color: var(--text2);">37 разделов · Все темы из 3-часового видео покрыты исчерпывающе</p>
+        <p style="color: var(--text2); font-size: 14px; margin-top: 8px;">Курс Никиты Велса · 2026 · Система из 31 агента — в его Telegram-канале</p>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+</body>
+</html>

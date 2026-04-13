@@ -1,0 +1,956 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Stanford CS230 — Лекция 8: Agents, Prompts & RAG</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+
+  :root {
+    --bg: #0a0e1a;
+    --bg2: #111827;
+    --bg3: #1e2433;
+    --border: #2d3748;
+    --text: #e2e8f0;
+    --text2: #94a3b8;
+    --accent: #38bdf8;
+    --accent2: #0ea5e9;
+    --green: #34d399;
+    --orange: #fb923c;
+    --purple: #a78bfa;
+    --red: #f87171;
+    --yellow: #fbbf24;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Inter', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.8;
+    font-size: 16px;
+  }
+
+  .layout {
+    display: flex;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 24px;
+  }
+
+  .toc {
+    width: 260px;
+    flex-shrink: 0;
+    position: sticky;
+    top: 32px;
+    height: calc(100vh - 64px);
+    overflow-y: auto;
+    padding: 32px 24px 32px 0;
+    border-right: 1px solid var(--border);
+    margin-right: 48px;
+  }
+
+  .toc::-webkit-scrollbar { width: 4px; }
+  .toc::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+
+  .toc-title {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--text2);
+    margin-bottom: 16px;
+  }
+
+  .toc a {
+    display: block;
+    color: var(--text2);
+    text-decoration: none;
+    font-size: 13px;
+    padding: 4px 0 4px 10px;
+    margin-left: -10px;
+    transition: color 0.2s;
+    border-left: 2px solid transparent;
+  }
+
+  .toc a:hover { color: var(--accent); border-left-color: var(--accent); }
+  .toc a.h3 { padding-left: 22px; font-size: 12px; }
+
+  .content {
+    flex: 1;
+    min-width: 0;
+    padding: 48px 0 80px;
+  }
+
+  .hero {
+    margin-bottom: 56px;
+    padding-bottom: 48px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .hero-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(56,189,248,0.1);
+    border: 1px solid rgba(56,189,248,0.25);
+    color: var(--accent);
+    font-size: 12px;
+    font-weight: 500;
+    padding: 6px 14px;
+    border-radius: 100px;
+    margin-bottom: 24px;
+    letter-spacing: 0.04em;
+  }
+
+  .hero h1 {
+    font-size: 40px;
+    font-weight: 700;
+    line-height: 1.15;
+    letter-spacing: -0.02em;
+    margin-bottom: 16px;
+    background: linear-gradient(135deg, #e2e8f0 0%, #38bdf8 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .hero-sub { color: var(--text2); font-size: 17px; max-width: 600px; }
+
+  section {
+    margin-bottom: 56px;
+    scroll-margin-top: 32px;
+  }
+
+  section h2 {
+    font-size: 26px;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    margin-bottom: 20px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .part-num {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    background: rgba(56,189,248,0.15);
+    border: 1px solid rgba(56,189,248,0.3);
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--accent);
+    flex-shrink: 0;
+  }
+
+  section h3 {
+    font-size: 17px;
+    font-weight: 600;
+    color: var(--text);
+    margin: 28px 0 12px;
+    scroll-margin-top: 32px;
+  }
+
+  p { margin-bottom: 14px; }
+
+  blockquote {
+    background: rgba(56,189,248,0.06);
+    border-left: 3px solid var(--accent);
+    border-radius: 0 8px 8px 0;
+    padding: 14px 18px;
+    margin: 20px 0;
+    color: var(--text2);
+    font-size: 15px;
+  }
+
+  blockquote.warn {
+    background: rgba(251,146,60,0.06);
+    border-left-color: var(--orange);
+  }
+
+  blockquote.purple {
+    background: rgba(167,139,250,0.06);
+    border-left-color: var(--purple);
+  }
+
+  pre {
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 20px;
+    overflow-x: auto;
+    margin: 16px 0;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13.5px;
+    line-height: 1.7;
+  }
+
+  code {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    background: rgba(255,255,255,0.07);
+    padding: 2px 7px;
+    border-radius: 5px;
+    color: var(--green);
+  }
+
+  pre code { background: none; padding: 0; color: var(--text); }
+
+  .table-wrap { overflow-x: auto; margin: 20px 0; }
+
+  table { width: 100%; border-collapse: collapse; font-size: 14.5px; }
+
+  th {
+    background: var(--bg3);
+    color: var(--text2);
+    font-weight: 600;
+    font-size: 12px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    padding: 12px 16px;
+    text-align: left;
+    border-bottom: 1px solid var(--border);
+  }
+
+  td {
+    padding: 12px 16px;
+    border-bottom: 1px solid rgba(45,55,72,0.6);
+    vertical-align: top;
+  }
+
+  tr:last-child td { border-bottom: none; }
+  tr:hover td { background: rgba(255,255,255,0.02); }
+
+  ul, ol { padding-left: 22px; margin-bottom: 14px; }
+  li { margin-bottom: 6px; }
+  li::marker { color: var(--accent); }
+
+  .card {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px 24px;
+    margin: 16px 0;
+  }
+
+  .card-title {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--accent);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    margin-bottom: 12px;
+  }
+
+  .card-title.green { color: var(--green); }
+  .card-title.purple { color: var(--purple); }
+  .card-title.orange { color: var(--orange); }
+  .card-title.yellow { color: var(--yellow); }
+
+  .steps { counter-reset: step; margin: 16px 0; }
+
+  .step {
+    display: flex;
+    gap: 16px;
+    margin-bottom: 16px;
+    align-items: flex-start;
+  }
+
+  .step-num {
+    counter-increment: step;
+    width: 28px;
+    height: 28px;
+    background: rgba(56,189,248,0.15);
+    border: 1px solid rgba(56,189,248,0.3);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--accent);
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+
+  .step-num::before { content: counter(step); }
+
+  .tag {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 600;
+    padding: 3px 10px;
+    border-radius: 100px;
+    margin-right: 6px;
+    margin-bottom: 6px;
+    letter-spacing: 0.04em;
+  }
+
+  .tag.blue { background: rgba(56,189,248,0.1); border: 1px solid rgba(56,189,248,0.25); color: var(--accent); }
+  .tag.green { background: rgba(52,211,153,0.1); border: 1px solid rgba(52,211,153,0.25); color: var(--green); }
+  .tag.purple { background: rgba(167,139,250,0.1); border: 1px solid rgba(167,139,250,0.25); color: var(--purple); }
+  .tag.orange { background: rgba(251,146,60,0.1); border: 1px solid rgba(251,146,60,0.25); color: var(--orange); }
+  .tag.yellow { background: rgba(251,191,36,0.1); border: 1px solid rgba(251,191,36,0.25); color: var(--yellow); }
+
+  .highlight {
+    background: linear-gradient(135deg, rgba(56,189,248,0.08), rgba(167,139,250,0.05));
+    border: 1px solid rgba(56,189,248,0.2);
+    border-radius: 12px;
+    padding: 20px 24px;
+    margin: 20px 0;
+  }
+
+  .error-box {
+    background: rgba(248,113,113,0.06);
+    border: 1px solid rgba(248,113,113,0.2);
+    border-radius: 12px;
+    padding: 20px 24px;
+    margin: 16px 0;
+  }
+
+  .error-box .card-title { color: var(--red); }
+
+  .two-col {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin: 16px 0;
+  }
+
+  hr { border: none; border-top: 1px solid var(--border); margin: 32px 0; }
+  strong { font-weight: 600; }
+  em { color: var(--text2); font-style: italic; }
+
+  @media print {
+    .toc { display: none; }
+    .layout { display: block; }
+    .content { padding: 0; }
+    body { background: white; color: #111; font-size: 12px; }
+    pre { background: #f5f5f5; border-color: #ddd; }
+    section h2 { color: #111; border-bottom-color: #ddd; }
+    .hero h1 { -webkit-text-fill-color: #111; }
+    .card { background: #f9f9f9; border-color: #ddd; }
+    blockquote { background: #f5f5f5; }
+    td, th { border-color: #ddd; }
+    th { background: #f5f5f5; color: #666; }
+  }
+
+  @media (max-width: 768px) {
+    .toc { display: none; }
+    .layout { display: block; }
+    .two-col { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+<div class="layout">
+
+  <nav class="toc">
+    <div class="toc-title">Содержание</div>
+    <a href="#intro">О лекции</a>
+    <a href="#p1">1. Ограничения LLM</a>
+    <a href="#p2">2. Промпт-инжиниринг</a>
+    <a href="#p2-zeroshot" class="h3">Zero-shot</a>
+    <a href="#p2-fewshot" class="h3">Few-shot</a>
+    <a href="#p2-cot" class="h3">Chain of Thought</a>
+    <a href="#p3">3. Chaining промптов</a>
+    <a href="#p4">4. Fine-tuning</a>
+    <a href="#p5">5. RAG — как работает</a>
+    <a href="#p5-embeddings" class="h3">Эмбеддинги</a>
+    <a href="#p5-search" class="h3">Поиск по векторам</a>
+    <a href="#p6">6. Память агентов</a>
+    <a href="#p7">7. Кейс: агент поддержки</a>
+    <a href="#p8">8. LLM-судьи (Evals)</a>
+    <a href="#p9">9. Human in the Loop</a>
+    <a href="#p10">10. Jagged Frontier</a>
+    <a href="#p11">11. Кентавры vs Киборги</a>
+    <a href="#p12">12. Fuzzy Engineering</a>
+    <a href="#p13">13. Архитектура агентов</a>
+    <a href="#p14">14. MCP протокол</a>
+    <a href="#p15">15. Иерархия агентов</a>
+    <a href="#p16">16. Советы инженерам</a>
+    <a href="#p17">17. Будущее ИИ</a>
+  </nav>
+
+  <main class="content">
+
+    <div class="hero" id="intro">
+      <div class="hero-badge">🎓 Stanford CS230 · Осень 2025 · Лекция 8</div>
+      <h1>Agents, Prompts<br>and RAG</h1>
+      <p class="hero-sub">Академическая лекция Стэнфорда по глубокому обучению. Beyond LLM — от промптов до мультиагентных систем. Читай как будто сидишь в аудитории.</p>
+      <div style="margin-top: 20px;">
+        <span class="tag blue">Промпт-инжиниринг</span>
+        <span class="tag purple">RAG</span>
+        <span class="tag green">Agent Workflows</span>
+        <span class="tag orange">Fuzzy Engineering</span>
+        <span class="tag yellow">MCP</span>
+      </div>
+    </div>
+
+    <!-- Part 1 -->
+    <section id="p1">
+      <h2><span class="part-num">1</span> Ограничения базовых LLM-моделей</h2>
+      <p>Лектор начинает с честного разбора проблем «ванильных» pre-trained моделей — зачем вообще нужно идти «Beyond LLM».</p>
+
+      <div class="error-box">
+        <div class="card-title">Knowledge Gaps — пробелы в знаниях</div>
+        <p>Модели обучаются на открытых данных. Им не хватает специфических корпоративных знаний: частные базы данных, узкодоменные кейсы (например, диагностика болезней сельскохозяйственных культур).</p>
+      </div>
+
+      <div class="error-box">
+        <div class="card-title">Distribution Shift — сдвиг распределения</div>
+        <p>Данные при обучении (high quality) отличаются от реальных данных «в дикой природе» — низкое качество, другая структура, опечатки, сленг.</p>
+      </div>
+
+      <div class="error-box">
+        <div class="card-title">Cutoff Dates — устаревшие знания</div>
+        <p>Модели не знают о событиях после даты окончания обучения. Не понимают новый сленг, мемы или актуальные новости.</p>
+      </div>
+
+      <div class="error-box">
+        <div class="card-title">Трудности контроля поведения</div>
+        <p>Удержать модель в рамках заданного поведения крайне сложно. Исторический пример: бот Microsoft <strong>Tay</strong> стал «расистом» через <strong>16 часов</strong> после запуска из-за взаимодействия с пользователями. Даже лучшие команды (OpenAI, xAI) сталкиваются с противоречивым контентом.</p>
+      </div>
+
+      <div class="error-box">
+        <div class="card-title">Галлюцинации источников</div>
+        <p>При попытке сослаться на научные работы или юридические документы модели часто <strong>выдумывают названия и авторов</strong>. Недопустимо в медицине или праве.</p>
+      </div>
+
+      <div class="error-box">
+        <div class="card-title">Limited Context Window + «Иголка в стоге сена»</div>
+        <p>Даже окна в сотни тысяч токенов недостаточно для корпоративных архивов. Плюс механизм внимания (Attention) хуже работает в больших контекстах — модель <strong>пропускает важные факты</strong> в середине длинного текста.</p>
+        <p style="color: var(--text2); font-size: 14px; margin-top: 8px;">200 000 токенов ≈ объём двух книг. После 8 реплик в диалоге модель начинает «терять себя» и хуже следовать инструкциям.</p>
+      </div>
+    </section>
+
+    <!-- Part 2 -->
+    <section id="p2">
+      <h2><span class="part-num">2</span> Промпт-инжиниринг</h2>
+      <p>Три фундаментальных техники для управления поведением модели <strong>без переобучения</strong>.</p>
+
+      <h3 id="p2-zeroshot">Zero-shot — без примеров</h3>
+      <div class="card">
+        <div class="card-title">Что это</div>
+        <p>Базовый метод: даёшь инструкцию без каких-либо примеров.</p>
+        <pre><code>Классифицируй тон этого предложения:
+положительный, отрицательный или нейтральный.</code></pre>
+        <p style="color: var(--text2); font-size: 14px; margin-top: 8px;"><strong>Проблема:</strong> задачи часто субъективны. «Продукт нормальный, но я ожидал большего» — нейтральный или отрицательный? Без контекста модель угадывает.</p>
+      </div>
+
+      <h3 id="p2-fewshot">Few-shot — с примерами</h3>
+      <div class="card">
+        <div class="card-title">Что это</div>
+        <p>Добавляешь в промпт несколько размеченных примеров — модель понимает ожидаемый формат и логику.</p>
+        <pre><code>Отзыв: "Доставили быстро, всё целое!" → Положительный
+Отзыв: "Сломалось через день." → Отрицательный
+Отзыв: "Нормально, ничего особенного." → Нейтральный
+
+Классифицируй: "Ожидал большего, но в целом ок."</code></pre>
+        <p style="color: var(--text2); font-size: 14px; margin-top: 8px;">Позволяет <strong>выровнять</strong> поведение модели под конкретные ожидания — без изменения весов модели.</p>
+      </div>
+
+      <h3 id="p2-cot">Chain of Thought — цепочка рассуждений</h3>
+      <div class="card">
+        <div class="card-title">Что это</div>
+        <p>Явно указываешь модели думать шаг за шагом.</p>
+        <pre><code>Реши задачу. Действуй пошагово и не пропускай ни одного шага.</code></pre>
+        <blockquote style="margin: 12px 0 0;">
+          Согласно исследованиям, CoT <strong>значительно улучшает</strong> качество в сложных логических и математических задачах. Модель как бы «думает вслух» — и делает меньше ошибок.
+        </blockquote>
+      </div>
+    </section>
+
+    <!-- Part 3 -->
+    <section id="p3">
+      <h2><span class="part-num">3</span> Chaining — цепочки промптов</h2>
+      <p>Вместо одного огромного промпта — разбиваешь задачу на несколько последовательных этапов.</p>
+
+      <h3>Пример: ответ на негативный отзыв</h3>
+      <div class="card">
+        <div class="card-title orange">Плохо — один промпт</div>
+        <pre><code>Прочитай отзыв и напиши вежливый ответ с решением проблемы.</code></pre>
+        <p style="color: var(--text2); font-size: 14px; margin-top: 8px;">Модель пытается делать всё сразу → больше ошибок, сложнее отлаживать.</p>
+      </div>
+
+      <div class="card">
+        <div class="card-title green">Хорошо — цепочка</div>
+        <div class="steps">
+          <div class="step"><div class="step-num"></div><div><strong>Промпт 1:</strong> Извлеки ключевые проблемы из отзыва</div></div>
+          <div class="step"><div class="step-num"></div><div><strong>Промпт 2:</strong> На основе проблем составь план ответа</div></div>
+          <div class="step"><div class="step-num"></div><div><strong>Промпт 3:</strong> На основе плана напиши итоговое письмо</div></div>
+        </div>
+      </div>
+
+      <h3>Почему это лучше</h3>
+      <ul>
+        <li><strong>Контроль и отладка</strong> — видишь на каком этапе ошибка: модель хорошо находит проблемы, но плохо пишет план?</li>
+        <li><strong>Качество</strong> — модель фокусируется на одной микрозадаче → меньше галлюцинаций</li>
+        <li><strong>Гибкость</strong> — легко заменить базовую модель на более новую без переделки всей системы</li>
+      </ul>
+    </section>
+
+    <!-- Part 4 -->
+    <section id="p4">
+      <h2><span class="part-num">4</span> Fine-tuning — почему лектор против</h2>
+
+      <blockquote class="warn">
+        Лектор Stanford CS230 прямо заявляет: <strong>«Я не сторонник Fine-tuning»</strong> — и объясняет почему.
+      </blockquote>
+
+      <h3>3 причины против</h3>
+      <div class="card">
+        <div class="card-title orange">Причина 1 — скорость развития моделей</div>
+        <p>К тому моменту когда ты закончишь собирать данные и дообучать модель — <strong>выйдет новая базовая модель</strong>, которая превзойдёт твою дообученную версию «из коробки».</p>
+      </div>
+      <div class="card">
+        <div class="card-title orange">Причина 2 — ресурсозатратность</div>
+        <p>Дорогой и трудоёмкий процесс. Требует огромного количества <strong>размеченных данных</strong>.</p>
+      </div>
+      <div class="card">
+        <div class="card-title orange">Причина 3 — риск переобучения</div>
+        <p>Дообученная модель становится слишком специализированной и теряет способности к общим задачам.</p>
+      </div>
+
+      <h3>Когда Fine-tuning всё же оправдан</h3>
+      <div class="highlight">
+        <p>Только в двух случаях:</p>
+        <ul style="margin-top: 10px;">
+          <li>Задача требует <strong>постоянного вывода с очень высокой точностью</strong> (юриспруденция, наука)</li>
+          <li>Модель сталкивается с <strong>очень специфическим узкодоменным языком</strong>, которого нет в обучающих данных</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- Part 5 -->
+    <section id="p5">
+      <h2><span class="part-num">5</span> RAG — Retrieval Augmented Generation</h2>
+      <p>RAG позволяет LLM <strong>извлекать информацию из внешних источников</strong> и добавлять её в контекст промпта. Решает сразу несколько ограничений базовых моделей.</p>
+
+      <h3 id="p5-embeddings">Эмбеддинги — как это устроено</h3>
+      <div class="steps">
+        <div class="step"><div class="step-num"></div><div>Документы из базы знаний (PDF, статьи) пропускаются через алгоритм</div></div>
+        <div class="step"><div class="step-num"></div><div>Каждый документ превращается в <strong>вектор</strong> (массив чисел) — эмбеддинг</div></div>
+        <div class="step"><div class="step-num"></div><div>Векторы хранятся в <strong>векторной базе данных</strong></div></div>
+      </div>
+
+      <blockquote>
+        <strong>Компромисс размера вектора:</strong> слишком маленький — теряет информацию, слишком большой — увеличивает задержку (latency).
+      </blockquote>
+
+      <h3 id="p5-search">Поиск по запросу</h3>
+      <div class="steps">
+        <div class="step"><div class="step-num"></div><div>Запрос пользователя тоже превращается в вектор</div></div>
+        <div class="step"><div class="step-num"></div><div>Система вычисляет <strong>расстояние между векторами</strong> (метрика близости)</div></div>
+        <div class="step"><div class="step-num"></div><div>Извлекаются наиболее релевантные куски текста</div></div>
+        <div class="step"><div class="step-num"></div><div>Найденные документы вставляются в промпт-шаблон</div></div>
+        <div class="step"><div class="step-num"></div><div>Модель генерирует обоснованный ответ со ссылками на источники</div></div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Шаблон промпта для RAG</div>
+        <pre><code>Ответь на вопрос пользователя, используя ТОЛЬКО эти документы:
+
+[Документ 1: ...]
+[Документ 2: ...]
+
+Вопрос: {вопрос пользователя}</code></pre>
+      </div>
+    </section>
+
+    <!-- Part 6 -->
+    <section id="p6">
+      <h2><span class="part-num">6</span> Память агентов — два уровня</h2>
+      <p>Для эффективной работы автономных систем лектор предлагает разделять память на два уровня.</p>
+
+      <div class="two-col">
+        <div class="card">
+          <div class="card-title blue">Working Memory — рабочая</div>
+          <p><strong>Быстрая</strong>, для данных текущей сессии.</p>
+          <p style="color: var(--text2); font-size: 14px; margin-top: 8px;">Примеры: имя пользователя, текущий вопрос, активный заказ.</p>
+          <p style="color: var(--text2); font-size: 14px;">Доступ — мгновенный, дешёвый.</p>
+        </div>
+        <div class="card">
+          <div class="card-title purple">Archival Memory — архивная</div>
+          <p><strong>Медленная</strong>, для долгосрочных данных.</p>
+          <p style="color: var(--text2); font-size: 14px; margin-top: 8px;">Примеры: дата рождения, история прошлых поездок, предпочтения.</p>
+          <p style="color: var(--text2); font-size: 14px;">Доступ — медленнее и дороже. Данные переносятся в рабочую память только при необходимости.</p>
+        </div>
+      </div>
+
+      <blockquote>
+        Разделение памяти — не техническая деталь, а <strong>архитектурное решение</strong>. Оно напрямую влияет на стоимость и скорость ответов.
+      </blockquote>
+    </section>
+
+    <!-- Part 7 -->
+    <section id="p7">
+      <h2><span class="part-num">7</span> Кейс: Агент службы поддержки</h2>
+      <p>В лекции детально разбирается создание агента для <strong>смены адреса доставки</strong> — классический пример декомпозиции задачи.</p>
+
+      <div class="steps">
+        <div class="step">
+          <div class="step-num"></div>
+          <div>
+            <strong>Извлечение информации (LLM)</strong><br>
+            <span style="color: var(--text2); font-size: 14px;">Обычная LLM извлекает номер заказа и новый адрес из сообщения клиента.</span>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num"></div>
+          <div>
+            <strong>Поиск в БД (Tool/MCP)</strong><br>
+            <span style="color: var(--text2); font-size: 14px;">Инструмент проверяет статус заказа в базе данных компании.</span>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num"></div>
+          <div>
+            <strong>Проверка политики (RAG)</strong><br>
+            <span style="color: var(--text2); font-size: 14px;">Агент обращается к базе документов компании через RAG: «Можно ли менять адрес для этого типа доставки?»</span>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num"></div>
+          <div>
+            <strong>Действие и ответ (API + LLM)</strong><br>
+            <span style="color: var(--text2); font-size: 14px;">Вызывает API для обновления данных → LLM формулирует вежливое подтверждение клиенту.</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="highlight">
+        <strong>Ключевой вывод:</strong> каждый шаг использует <strong>разный инструмент</strong> (LLM, Tool, RAG, API) — именно это и есть агентный воркфлоу.
+      </div>
+    </section>
+
+    <!-- Part 8 -->
+    <section id="p8">
+      <h2><span class="part-num">8</span> LLM-судьи — Evals</h2>
+      <p>Как проверять качество работы агентов, не проверяя тысячи диалогов вручную?</p>
+
+      <div class="card">
+        <div class="card-title">Принцип</div>
+        <p>Используешь <strong>другую ИИ-модель в роли судьи</strong> для оценки ответов первой модели.</p>
+      </div>
+
+      <h3>Два формата оценки</h3>
+      <div class="two-col">
+        <div class="card">
+          <div class="card-title blue">Попарное сравнение</div>
+          <p>Судья сравнивает два ответа: «Какой из них лучше отвечает на вопрос?»</p>
+        </div>
+        <div class="card">
+          <div class="card-title purple">Оценка по рубрике</div>
+          <p>Судья выставляет оценку от 1 до 5 по заданным критериям: вежливость, точность, полнота.</p>
+        </div>
+      </div>
+
+      <blockquote>
+        LLM Traces — при найме в стартап спрашивай, есть ли система трассировки. Без возможности просмотреть цепочку вызовов <strong>отладить агентную систему почти невозможно</strong>.
+      </blockquote>
+    </section>
+
+    <!-- Part 9 -->
+    <section id="p9">
+      <h2><span class="part-num">9</span> Human in the Loop</h2>
+      <p>Поскольку ИИ-системы «нечёткие» (fuzzy) и могут ошибаться, лектор настаивает на встроенной <strong>функции апелляции</strong>.</p>
+
+      <div class="card">
+        <div class="card-title">Как работает</div>
+        <p>Если пользователь недоволен решением агента — в процесс вступает человек-оператор. Он может оспорить или исправить действия ИИ.</p>
+      </div>
+
+      <h3>Где это критично</h3>
+      <div style="margin: 12px 0 20px;">
+        <span class="tag orange">Медицина</span>
+        <span class="tag orange">Юриспруденция</span>
+        <span class="tag orange">Финансы</span>
+        <span class="tag orange">Образование</span>
+      </div>
+
+      <blockquote class="warn">
+        Пример: агент отказал в возврате товара. Без Human in the Loop у клиента нет способа оспорить решение. Это <strong>юридический и репутационный риск</strong> для бизнеса.
+      </blockquote>
+    </section>
+
+    <!-- Part 10 -->
+    <section id="p10">
+      <h2><span class="part-num">10</span> Jagged Frontier — Зубчатая граница</h2>
+      <p>Одна из ключевых концепций лекции — граница возможностей ИИ не является прямой линией.</p>
+
+      <div class="card">
+        <div class="card-title yellow">Исследование</div>
+        <p>Проведено <strong>Гарвардской школой бизнеса, Уортоном и BCG</strong> с участием консультантов. Три группы:</p>
+        <ul style="margin-top: 8px;">
+          <li>Без ИИ</li>
+          <li>С доступом к GPT-4</li>
+          <li>С GPT-4 <strong>плюс обучение промпт-инжинирингу</strong></li>
+        </ul>
+      </div>
+
+      <h3>Результаты</h3>
+      <div class="two-col">
+        <div class="card">
+          <div class="card-title green">Где ИИ помогает ✓</div>
+          <p>Задачи на скорость, качество, базовый анализ — внутри «границы».</p>
+          <p style="color: var(--text2); font-size: 14px; margin-top: 8px;">ИИ значительно повышает продуктивность.</p>
+        </div>
+        <div class="card">
+          <div class="card-title orange">Где ИИ мешает ✗</div>
+          <p>Сложные задачи, требующие глубокой человеческой проверки — за «границей».</p>
+          <p style="color: var(--text2); font-size: 14px; margin-top: 8px;"><strong>«Засыпание за рулем»</strong>: люди слепо доверяли ИИ там, где он был слаб.</p>
+        </div>
+      </div>
+
+      <blockquote>
+        <strong>Вывод:</strong> группа с обучением промпт-инжинирингу показала лучшие результаты, чем те, кто использовал ИИ без подготовки. Навык важнее доступа.
+      </blockquote>
+    </section>
+
+    <!-- Part 11 -->
+    <section id="p11">
+      <h2><span class="part-num">11</span> Кентавры vs Киборги</h2>
+      <p>Лектор выделяет два принципиально разных стиля работы с ИИ.</p>
+
+      <div class="two-col">
+        <div class="card">
+          <div class="card-title blue">🐴 Кентавры (Centaurs)</div>
+          <p><strong>«Разделяй и делегируй»</strong></p>
+          <p style="color: var(--text2); font-size: 14px; margin-top: 8px;">Отдают ИИ крупные, чётко очерченные задачи (например, «создай структуру презентации») и возвращаются за готовым результатом.</p>
+          <p style="color: var(--text2); font-size: 14px; margin-top: 8px;">Преобладает в <strong>enterprise-среде</strong>.</p>
+        </div>
+        <div class="card">
+          <div class="card-title purple">🤖 Киборги (Cyborgs)</div>
+          <p><strong>«Бионический симбиоз»</strong></p>
+          <p style="color: var(--text2); font-size: 14px; margin-top: 8px;">Работают в тесном постоянном обмене с моделью — постоянный back-and-forth, корректировка в процессе.</p>
+          <p style="color: var(--text2); font-size: 14px; margin-top: 8px;">Чаще встречается у <strong>студентов и разработчиков</strong>.</p>
+        </div>
+      </div>
+
+      <blockquote class="purple">
+        Ни один стиль не лучше другого — они подходят для разных задач. Кентавр эффективен когда задача чётко определена, киборг — когда нужна итерация.
+      </blockquote>
+    </section>
+
+    <!-- Part 12 -->
+    <section id="p12">
+      <h2><span class="part-num">12</span> Fuzzy Engineering — Нечёткая инженерия</h2>
+      <p>Новая парадигма разработки, требующая <strong>сдвига мышления</strong> от детерминированного к вероятностному.</p>
+
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Традиционное ПО</th><th>Fuzzy Engineering</th></tr></thead>
+          <tbody>
+            <tr><td>Структурированные данные (JSON, БД)</td><td>Текст и изображения в свободной форме</td></tr>
+            <tr><td>Предсказуемые, детерминированные результаты</td><td>Вероятностные, «нечёткие» результаты</td></tr>
+            <tr><td>Пишешь жёсткие алгоритмы и микросервисы</td><td>Делегируешь задачи ролям-агентам</td></tr>
+            <tr><td>Дорогие эксперименты — выбрасывать код страшно</td><td>Стоимость экспериментов радикально снижается</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Мышление менеджера</div>
+        <p>Инженер в этой парадигме думает как <strong>менеджер, делегирующий задачи ролям</strong>:</p>
+        <pre><code>Вместо: написать функцию parse_invoice()
+
+Думаешь: "Дай задачу агенту-аналитику —
+он сам разберётся как извлечь данные из счёта"</code></pre>
+      </div>
+
+      <blockquote class="warn">
+        Из-за нечёткости систем критически важны <strong>защитные механизмы</strong>: Human in the Loop, апелляция, LLM-судьи. Без них система непредсказуема в продакшене.
+      </blockquote>
+    </section>
+
+    <!-- Part 13 -->
+    <section id="p13">
+      <h2><span class="part-num">13</span> Архитектура агентных воркфлоу</h2>
+      <p>Полная архитектура автономного агента по Stanford CS230.</p>
+
+      <h3>Из чего состоит агент</h3>
+      <div class="card">
+        <div class="card-title">4 компонента</div>
+        <ul>
+          <li><strong>Промпты</strong> — оптимизированные системные инструкции</li>
+          <li><strong>Память</strong> — рабочая (быстрая) и архивная (долгосрочная)</li>
+          <li><strong>Инструменты (Tools)</strong> — API для конкретных действий: бронирование, оплата, поиск</li>
+          <li><strong>Ресурсы</strong> — внешние данные: CRM, Google Drive, базы знаний</li>
+        </ul>
+      </div>
+
+      <h3>Три уровня автономии</h3>
+      <div class="steps">
+        <div class="step">
+          <div class="step-num"></div>
+          <div>
+            <strong>Минимальная</strong> — жёстко прописанные шаги (hardcoded steps)<br>
+            <span style="color: var(--text2); font-size: 14px;">Агент следует заранее определённому скрипту.</span>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num"></div>
+          <div>
+            <strong>Полуавтономная</strong> — инструменты заданы, порядок свободный<br>
+            <span style="color: var(--text2); font-size: 14px;">ИИ сам решает в каком порядке использовать инструменты для достижения цели.</span>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num"></div>
+          <div>
+            <strong>Полная автономия</strong> — агент сам определяет шаги<br>
+            <span style="color: var(--text2); font-size: 14px;">Может создавать инструменты: писать код, делать поиск, строить подзадачи.</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Part 14 -->
+    <section id="p14">
+      <h2><span class="part-num">14</span> MCP — Model Context Protocol</h2>
+      <p>Протокол от Anthropic, который лектор называет <strong>эволюцией взаимодействия ИИ с данными</strong>.</p>
+
+      <div class="card">
+        <div class="card-title orange">Проблема обычного API</div>
+        <p>Требует «хардкодинга» шагов: нужно дать модели документацию, научить её делать JSON-запросы и обрабатывать ответы. Плохо масштабируется.</p>
+      </div>
+
+      <div class="card">
+        <div class="card-title green">Логика MCP — клиент-сервер</div>
+        <p>Посредник между LLM и данными. Агент спрашивает сервер: <em>«Что тебе нужно, чтобы выдать мне данные?»</em> — сервер отвечает списком требований.</p>
+        <p style="margin-top: 10px;">Это <strong>агент-к-агенту коммуникация</strong>: модели не нужно знать детали реализации каждого API.</p>
+      </div>
+
+      <h3>Преимущества MCP над API</h3>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>API</th><th>MCP</th></tr></thead>
+          <tbody>
+            <tr><td>Нужно документировать каждый эндпоинт</td><td>Сервер сам описывает свои возможности</td></tr>
+            <tr><td>Жёсткий JSON-контракт</td><td>Динамическое согласование</td></tr>
+            <tr><td>Плохо масштабируется на новые сервисы</td><td>Высокая масштабируемость</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- Part 15 -->
+    <section id="p15">
+      <h2><span class="part-num">15</span> Иерархия агентов — умный дом</h2>
+      <p>Лектор объясняет правильную архитектуру на примере умного дома.</p>
+
+      <div class="card">
+        <div class="card-title orange">Плохо — управлять каждым агентом отдельно</div>
+        <p>Пользователь напрямую общается с агентом охраны, агентом освещения, агентом холодильника — хаос и дублирование контекста.</p>
+      </div>
+
+      <div class="card">
+        <div class="card-title green">Хорошо — один оркестратор</div>
+        <p>Один агент-координатор принимает все запросы пользователя и <strong>делегирует специализированным агентам</strong>.</p>
+        <pre><code>Пользователь → Оркестратор
+                    ↓         ↓         ↓
+              Охрана    Освещение  Холодильник</code></pre>
+      </div>
+
+      <blockquote>
+        Это та же логика что и в Agent Teams из Claude Code — Router/TeamLead как единая точка входа.
+      </blockquote>
+    </section>
+
+    <!-- Part 16 -->
+    <section id="p16">
+      <h2><span class="part-num">16</span> Практические советы инженерам</h2>
+
+      <div class="card">
+        <div class="card-title">Task Decomposition — сначала наблюдай</div>
+        <p>Прежде чем писать код — <strong>проведи день-два с реальным сотрудником</strong> (например, агентом поддержки). Детально разложи его задачи на шаги. Только потом автоматизируй.</p>
+      </div>
+
+      <div class="card">
+        <div class="card-title">LLM Traces — требуй трассировку</div>
+        <p>При найме в стартап обязательно спрашивай: <em>«Есть ли система трассировки вызовов?»</em> Без неё отладить агентную систему в продакшене <strong>почти невозможно</strong>.</p>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Breadth over Depth — широта важнее глубины</div>
+        <p>Методы (варианты RAG, архитектуры агентов) меняются каждые несколько месяцев. Фокусируйся на <strong>широте понимания</strong> — умей быстро изучить конкретную технологию когда она понадобится («Sprinting»).</p>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Промпт-инжиниринг — обязательный навык</div>
+        <p>Лектор не верит в профессию «промпт-инженер» как отдельную карьеру. Но считает это <strong>обязательным навыком для любого специалиста</strong> — как умение пользоваться поиском.</p>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Debug через Chaining</div>
+        <p>Разбивай один сложный промпт на цепочку независимых вызовов. Так видно <strong>на каком этапе ошибка</strong>: извлечение данных, планирование или формулировка.</p>
+      </div>
+    </section>
+
+    <!-- Part 17 -->
+    <section id="p17">
+      <h2><span class="part-num">17</span> Будущее ИИ — взгляд лектора</h2>
+
+      <div class="card">
+        <div class="card-title blue">Architecture Search — следующий прорыв</div>
+        <p>Scaling laws (просто добавить мощности) приводит к плато. Следующий прорыв — поиск архитектур, которые <strong>эффективнее человеческого мозга</strong> и требуют в 10 раз меньше данных и энергии.</p>
+      </div>
+
+      <div class="card">
+        <div class="card-title purple">Multimodality — умнее через другие модальности</div>
+        <p>Модели станут умнее в тексте именно за счёт понимания других форматов. Знание того, <strong>как звучит или выглядит кот</strong>, улучшает способность ИИ писать о нём.</p>
+      </div>
+
+      <div class="card">
+        <div class="card-title green">Гармония методов — как ребёнок учится</div>
+        <p>Будущие системы будут сочетать все подходы:</p>
+        <div class="table-wrap" style="margin-top: 10px;">
+          <table>
+            <thead><tr><th>Метод</th><th>Аналогия</th></tr></thead>
+            <tbody>
+              <tr><td>Pre-training</td><td>Инстинкты из DNA</td></tr>
+              <tr><td>Supervised Learning</td><td>Указания родителей</td></tr>
+              <tr><td>Reinforcement Learning</td><td>Падение на пол и обучение на ошибках</td></tr>
+              <tr><td>RAG</td><td>Обращение к учебникам и справочникам</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title yellow">Цифры из лекции</div>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Факт</th><th>Цифра / Деталь</th></tr></thead>
+            <tbody>
+              <tr><td>Сокращение времени кредитных меморандумов (McKinsey)</td><td><strong>20–60%</strong> (с 1–4 недель)</td></tr>
+              <tr><td>После скольких реплик модель «теряет себя»</td><td><strong>8 ходов</strong></td></tr>
+              <tr><td>Microsoft Tay стал «расистом» через</td><td><strong>16 часов</strong></td></tr>
+              <tr><td>200 000 токенов ≈</td><td><strong>2 книги</strong></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <hr>
+
+      <div class="highlight" style="text-align: center;">
+        <p style="font-size: 18px; font-weight: 700; margin-bottom: 8px;">Stanford CS230 · Осень 2025</p>
+        <p style="color: var(--text2);">Лекция 8: Agents, Prompts and RAG · Beyond LLM</p>
+        <p style="color: var(--text2); font-size: 14px; margin-top: 8px;">Конспект создан с помощью Claude Code + NotebookLM</p>
+      </div>
+    </section>
+
+  </main>
+</div>
+</body>
+</html>
